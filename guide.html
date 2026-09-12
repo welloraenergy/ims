@@ -4,197 +4,149 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wellora IMS User Guide</title>
-<meta name="description" content="Simple user guide for Wellora IMS operations.">
+<meta name="description" content="Operational user guide for Wellora Energy Inventory Management System.">
 <style>
-:root{
-  --bg:#071418;
-  --panel:#0b2026;
-  --panel2:#0f2a31;
-  --line:#16434d;
-  --cyan:#36d1dc;
-  --cyan2:#21a9b6;
-  --text:#e7f7f8;
-  --muted:#9dbbc0;
-  --green:#5ee0a0;
-  --amber:#f6c76b;
-  --red:#ff8a8a;
-  --blue:#73b7ff;
-  --purple:#c4a7ff;
-  --max:1180px;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth;background:var(--bg)}
+:root{--bg:#071418;--panel:#0b2026;--panel2:#0f2a31;--line:#16434d;--cyan:#36d1dc;--cyan2:#21a9b6;--text:#e7f7f8;--muted:#9dbbc0;--green:#5ee0a0;--amber:#f6c76b;--red:#ff8a8a;--blue:#73b7ff;--purple:#c4a7ff;--max:1180px}
+*{box-sizing:border-box}html{scroll-behavior:smooth;background:var(--bg)}
 body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top,#0a252c 0,#071418 38%,#071418 100%);color:var(--text);line-height:1.55}
-a{color:inherit}
-.wrap{width:min(var(--max),calc(100% - 28px));margin:auto}
-.hero{padding:54px 0 28px}
-.badge{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);background:#0a1f25;padding:7px 11px;border-radius:999px;color:#bfeef1;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
-h1{font-size:clamp(34px,6vw,62px);line-height:1.03;margin:18px 0 14px;letter-spacing:-.04em}
-.hero p{max-width:780px;color:var(--muted);font-size:clamp(16px,2vw,19px)}
-.quicknav{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
-.quicknav a{text-decoration:none;border:1px solid var(--line);background:#0b2026;padding:9px 12px;border-radius:10px;font-size:13px;color:#d5f3f5}
-.quicknav a:hover{border-color:var(--cyan2);background:#0f2a31}
-.section{padding:28px 0}
-.section-title{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:16px}
-.section h2{margin:0;font-size:clamp(24px,4vw,34px);letter-spacing:-.025em}
-.kicker{color:var(--cyan);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px}
-.sub{color:var(--muted);font-size:14px;max-width:700px}
-.card{background:linear-gradient(180deg,var(--panel),#091b20);border:1px solid var(--line);border-radius:18px;padding:18px}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
-.card h3{margin:0 0 6px;font-size:17px}.card p{margin:0;color:var(--muted);font-size:14px}
-.flow{display:flex;align-items:stretch;gap:8px;overflow-x:auto;padding-bottom:2px}
-.step{flex:1 0 150px;min-width:150px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
-.step b{display:block;font-size:13px;margin-bottom:4px}.step span{display:block;font-size:12px;color:var(--muted)}
-.arrow{align-self:center;color:var(--cyan);font-size:22px;font-weight:800;padding:0 2px}
-.note{border-left:3px solid var(--cyan2);background:#0a1e24;border-radius:10px;padding:12px 14px;color:#cce8eb;font-size:13px;margin-top:12px}
+a{color:inherit}.wrap{width:min(var(--max),calc(100% - 28px));margin:auto}.hero{padding:50px 0 26px}.badge{display:inline-flex;align-items:center;border:1px solid var(--line);background:#0a1f25;padding:7px 11px;border-radius:999px;color:#bfeef1;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+h1{font-size:clamp(34px,6vw,62px);line-height:1.03;margin:18px 0 14px;letter-spacing:-.04em}.hero p{max-width:820px;color:var(--muted);font-size:clamp(16px,2vw,19px)}
+.quicknav{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}.quicknav a{text-decoration:none;border:1px solid var(--line);background:#0b2026;padding:9px 12px;border-radius:10px;font-size:13px;color:#d5f3f5}.quicknav a:hover{border-color:var(--cyan2);background:#0f2a31}
+.section{padding:30px 0}.section-title{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:16px}.section h2{margin:0;font-size:clamp(24px,4vw,34px);letter-spacing:-.025em}.kicker{color:var(--cyan);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px}.sub{color:var(--muted);font-size:14px;max-width:700px}
+.card{background:linear-gradient(180deg,var(--panel),#091b20);border:1px solid var(--line);border-radius:18px;padding:18px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.card h3{margin:0 0 7px;font-size:17px}.card p{margin:0;color:var(--muted);font-size:14px}
+.flow{display:flex;align-items:stretch;gap:8px;overflow-x:auto;padding-bottom:2px}.step{flex:1 0 150px;min-width:150px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}.step b{display:block;font-size:13px;margin-bottom:4px}.step span{display:block;font-size:12px;color:var(--muted)}.arrow{align-self:center;color:var(--cyan);font-size:22px;font-weight:800;padding:0 2px}
+.note{border-left:3px solid var(--cyan2);background:#0a1e24;border-radius:10px;padding:12px 14px;color:#cce8eb;font-size:13px;margin-top:12px}.warn{border-left-color:var(--amber);background:#211d11;color:#f4e4bc}.danger{border-left-color:var(--red);background:#221416;color:#ffd1d1}
 .list{display:grid;gap:9px;margin-top:12px}.item{display:flex;gap:10px;align-items:flex-start}.dot{width:8px;height:8px;border-radius:999px;background:var(--cyan);margin-top:7px;flex:0 0 auto}.item div{font-size:14px;color:var(--muted)}.item strong{color:var(--text)}
-.table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:#091b20}
-.table th,.table td{text-align:left;padding:11px 12px;border-bottom:1px solid #123640;font-size:13px;vertical-align:top}.table th{background:#0d252c;color:#c9eef0}.table td{color:var(--muted)}.table tr:last-child td{border-bottom:0}
+.table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:#091b20}.table th,.table td{text-align:left;padding:11px 12px;border-bottom:1px solid #123640;font-size:13px;vertical-align:top}.table th{background:#0d252c;color:#c9eef0}.table td{color:var(--muted)}.table tr:last-child td{border-bottom:0}
 .tag{display:inline-block;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:800;border:1px solid currentColor}.green{color:var(--green)}.amber{color:var(--amber)}.red{color:var(--red)}.blue{color:var(--blue)}.purple{color:var(--purple)}
+.sequence{counter-reset:seq;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.sequence a{counter-increment:seq;text-decoration:none;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px 14px;font-size:14px}.sequence a:before{content:counter(seq,decimal-leading-zero) "  ";color:var(--cyan);font-weight:800}.sequence a:hover{border-color:var(--cyan2);background:var(--panel2)}
 footer{padding:38px 0 54px;color:#76989e;font-size:12px;text-align:center}
-@media(max-width:860px){.grid,.grid.two{grid-template-columns:1fr}.section-title{display:block}.flow{display:grid;overflow:visible}.step{min-width:0}.arrow{transform:rotate(90deg);text-align:center;padding:0}.table{display:block;overflow-x:auto;white-space:nowrap}}
-@media(max-width:520px){.hero{padding-top:34px}.wrap{width:min(100% - 20px,var(--max))}.card{padding:15px}.quicknav a{font-size:12px;padding:8px 10px}.section{padding:22px 0}}
+@media(max-width:860px){.grid,.grid.two,.sequence{grid-template-columns:1fr}.section-title{display:block}.flow{display:grid;overflow:visible}.step{min-width:0}.arrow{transform:rotate(90deg);text-align:center;padding:0}.table{display:block;overflow-x:auto;white-space:nowrap}}
+@media(max-width:520px){.hero{padding-top:34px}.wrap{width:min(100% - 20px,var(--max))}.card{padding:15px}.quicknav a{font-size:12px;padding:8px 10px}.section{padding:23px 0}}
 </style>
 </head>
 <body>
-<header class="hero">
-  <div class="wrap">
-    <div class="badge">Wellora Energy · Inventory Management System</div>
-    <h1>IMS User Guide</h1>
-    <p>A simple guide for everyday IMS work: finding items, moving stock, servicing equipment, reservations, rent-to-rent, incidents, disposition and documents.</p>
-    <nav class="quicknav" aria-label="Guide sections">
-      <a href="#start">Getting Started</a><a href="#picker">Finding Items</a><a href="#movement">Movement</a><a href="#service">Service Cycle</a><a href="#reservation">Reservation</a><a href="#r2r">Rent-to-Rent</a><a href="#incident">Incident</a><a href="#disposition">Disposition</a><a href="#documents">Documents</a><a href="#status">Status Guide</a>
-    </nav>
-  </div>
-</header>
+<header class="hero"><div class="wrap">
+  <div class="badge">Wellora Energy · Inventory Management System</div>
+  <h1>IMS User Guide</h1>
+  <p>This guide teaches the normal order of work in IMS: set up the masters first, register the items, then manage every physical and commercial event through the correct operational module.</p>
+  <nav class="quicknav" aria-label="Guide sections">
+    <a href="#setup">1. Settings & Businesses</a><a href="#registration">2. Registration</a><a href="#movement">3. Movements</a><a href="#service">4. Service Cycle</a><a href="#inventory">5. Stock Inventory</a><a href="#documents">6. Documents</a><a href="#r2r">7. R2R</a><a href="#reservation">8. Reservation</a><a href="#disposition">9. Disposition</a><a href="#incident">10. Incident</a>
+  </nav>
+</div></header>
 
 <main class="wrap">
-<section id="start" class="section">
-  <div class="section-title"><div><div class="kicker">01 · Getting Started</div><h2>How to use IMS</h2></div><div class="sub">IMS follows the physical item. Always select the correct source, destination and item before saving an operation.</div></div>
-  <div class="grid">
-    <div class="card"><h3>1. Sign in</h3><p>Use your authorised IMS account. Menus and actions depend on your assigned role.</p></div>
-    <div class="card"><h3>2. Check item identity</h3><p>Use Wellora SN / R2R SN whenever possible. Description search is also available.</p></div>
-    <div class="card"><h3>3. Confirm operation</h3><p>Review source, destination, quantity, reference and logistics information before submitting.</p></div>
+<section class="section">
+  <div class="section-title"><div><div class="kicker">Training Sequence</div><h2>Use IMS in this order</h2></div><div class="sub">The sequence below is the foundation of the system. Later modules depend on information created in the earlier ones.</div></div>
+  <div class="sequence">
+    <a href="#setup">Global Settings & Businesses</a><a href="#registration">Register / Import Items</a><a href="#movement">Movements</a><a href="#service">Service Cycle</a><a href="#inventory">Stock Inventory</a><a href="#documents">Documents</a><a href="#r2r">R2R</a><a href="#reservation">Reservation</a><a href="#disposition">Disposition</a><a href="#incident">Incident</a>
   </div>
+  <div class="note warn"><strong>Important:</strong> Do not start item registration or daily operations until the required Global Settings and Business records are available. These master records drive dropdowns, validation, locations, suppliers, clients and service providers throughout IMS.</div>
 </section>
 
-<section id="picker" class="section">
-  <div class="section-title"><div><div class="kicker">02 · Finding Items</div><h2>Fast Pick or Browse</h2></div><div class="sub">The same item-pick pattern is used across Movement, Service Cycle, Reservation, Disposition and Incident.</div></div>
+<section id="setup" class="section">
+  <div class="section-title"><div><div class="kicker">01 · Global Settings & Businesses</div><h2>Build the system masters first</h2></div><div class="sub">These are the reference records used by Registration, Movement, Service, Documents, R2R and the rest of IMS.</div></div>
   <div class="grid two">
-    <div class="card"><h3>Fast Pick</h3><p>If you know the Wellora SN / R2R SN, type it in the exact-value field and press Enter or Find. You may also search by exact Description.</p><div class="note">Best for users who already know the serial number or are scanning items one by one.</div></div>
-    <div class="card"><h3>Browse Eligible Items</h3><p>After choosing the required source/location, IMS shows up to 20 eligible items per page. Use Previous / Next and select one or several items as allowed by the workflow.</p><div class="note">IMS does not load hundreds of visible rows at once. The browser uses cursor pagination.</div></div>
+    <div class="card"><h3>What is Global Settings?</h3><p>Global Settings contains the controlled values used repeatedly across IMS, such as warehouses, item types, units, categories, sizes, grades, PPF, connections, ranges, brands, models and weight units.</p></div>
+    <div class="card"><h3>What are Businesses?</h3><p>Businesses are the external companies IMS works with. A business may act as a Supplier, Client, Service Provider or another supported business role. Use one clean business record instead of entering company names differently in every transaction.</p></div>
   </div>
+  <div class="flow" style="margin-top:14px">
+    <div class="step"><b>1. Open Global Settings</b><span>Create the master values that users will need.</span></div><div class="arrow">→</div>
+    <div class="step"><b>2. Check Warehouses</b><span>Make sure every physical IMS warehouse/location is available.</span></div><div class="arrow">→</div>
+    <div class="step"><b>3. Open Businesses</b><span>Create suppliers, clients and service providers.</span></div><div class="arrow">→</div>
+    <div class="step"><b>4. Assign Roles</b><span>Choose the correct business role(s) for each company.</span></div><div class="arrow">→</div>
+    <div class="step"><b>5. Verify Before Operations</b><span>Correct master data first; do not work around missing values.</span></div>
+  </div>
+  <div class="list"><div class="item"><span class="dot"></span><div><strong>Use consistent naming.</strong> Do not create duplicate variants such as “Kemaman Warehouse” and “KEMAMAN WH” for the same location.</div></div><div class="item"><span class="dot"></span><div><strong>Do not create fake master values.</strong> If a required supplier, client, warehouse or specification is missing, add or correct the master record first.</div></div></div>
+</section>
+
+<section id="registration" class="section">
+  <div class="section-title"><div><div class="kicker">02 · Register / Import Items</div><h2>Create the item before anything can happen to it</h2></div><div class="sub">Registration gives each physical item its permanent identity and ownership information. Owned and R2R items follow different ownership rules.</div></div>
+  <div class="grid two">
+    <div class="card"><h3>Owned / New Registration</h3><p>Use this for Wellora-owned physical items. Each physical serialized item should have its own Wellora SN. Excel import/export is the preferred bulk workflow.</p></div>
+    <div class="card"><h3>R2R Registration</h3><p>Use this for supplier-owned Rent-to-Rent items. Each physical item uses its R2R SN, supplier and supplier-related PO information. The item remains supplier-owned throughout its lifecycle.</p></div>
+  </div>
+  <div class="flow" style="margin-top:14px">
+    <div class="step"><b>Download / Prepare Excel</b><span>Use the IMS column structure. Do not rename headers.</span></div><div class="arrow">→</div>
+    <div class="step"><b>One Physical SN Per Row</b><span>Qty should represent one permanent physical serialized item.</span></div><div class="arrow">→</div>
+    <div class="step"><b>Import</b><span>IMS validates required fields, masters and serial numbers.</span></div><div class="arrow">→</div>
+    <div class="step"><b>Resolve Errors</b><span>Fix duplicate SNs or unknown master values before continuing.</span></div><div class="arrow">→</div>
+    <div class="step"><b>Confirm Item Exists</b><span>Check the item in Stock Inventory after successful registration.</span></div>
+  </div>
+  <div class="note"><strong>Duplicate protection:</strong> Wellora SN / R2R SN is the unique operational identity. Do not intentionally reuse an existing serial number.</div>
+  <div class="note warn"><strong>R2R:</strong> Imported R2R items intended for a warehouse use the normal incoming process. They can be In Transit until the arrival step is completed; do not manually force them to Available.</div>
 </section>
 
 <section id="movement" class="section">
-  <div class="section-title"><div><div class="kicker">03 · Movement</div><h2>Move items between locations</h2></div><div class="sub">Use Movement whenever the physical item changes location between supplier, warehouse and client.</div></div>
-  <div class="flow">
-    <div class="step"><b>Select Movement Type</b><span>Receive, transfer, send to client or return from client.</span></div><div class="arrow">→</div>
-    <div class="step"><b>Select Source</b><span>IMS checks which items are eligible at that source.</span></div><div class="arrow">→</div>
-    <div class="step"><b>Select Destination</b><span>Choose the receiving warehouse or client.</span></div><div class="arrow">→</div>
-    <div class="step"><b>Add Items</b><span>Fast Pick or Browse Eligible Items.</span></div><div class="arrow">→</div>
-    <div class="step"><b>Start Movement</b><span>Items become In Transit.</span></div><div class="arrow">→</div>
-    <div class="step"><b>Mark Arrived</b><span>Final status/location is written to inventory.</span></div>
+  <div class="section-title"><div><div class="kicker">03 · Movements</div><h2>Record every physical location change</h2></div><div class="sub">Movement is the normal module for supplier, warehouse and client transfers. If the item physically changes location, the movement should exist in IMS.</div></div>
+  <div class="grid">
+    <div class="card"><h3>Receive from Supplier</h3><p>Supplier → Warehouse. Used when an eligible item is received into a warehouse. Arrival normally makes the item Available.</p></div>
+    <div class="card"><h3>Transfer Warehouse</h3><p>Warehouse → Warehouse. Used for internal transfer between physical inventory locations.</p></div>
+    <div class="card"><h3>Rental / Send to Client</h3><p>Warehouse → Client. Used when stock is sent to a client. Client PO is the normal reference.</p></div>
   </div>
-  <div class="grid" style="margin-top:14px">
-    <div class="card"><h3>Receive from Supplier</h3><p>Requires Wellora PO. Destination is warehouse. Arrival normally becomes Available.</p></div>
-    <div class="card"><h3>Warehouse Transfer</h3><p>Requires Internal Transfer No. Source and destination warehouses must be different.</p></div>
-    <div class="card"><h3>Rental / Send to Client</h3><p>Requires Client PO. May use an existing reservation. Arrival becomes At Client.</p></div>
-  </div>
+  <div class="grid two" style="margin-top:14px"><div class="card"><h3>Return from Client</h3><p>Client → Warehouse. Use this when equipment physically comes back from a client location.</p></div><div class="card"><h3>Fast Pick or Browse</h3><p>Use Wellora SN / R2R SN when known, or browse eligible items. IMS only presents items that meet the source/status rules for that movement.</p></div></div>
+  <div class="flow" style="margin-top:14px"><div class="step"><b>Select Action</b><span>Choose the correct physical movement.</span></div><div class="arrow">→</div><div class="step"><b>Select Source</b><span>Choose where the item is physically leaving from.</span></div><div class="arrow">→</div><div class="step"><b>Select Destination</b><span>Choose where it is physically going.</span></div><div class="arrow">→</div><div class="step"><b>Add Eligible Items</b><span>Fast Pick or Browse Eligible Items.</span></div><div class="arrow">→</div><div class="step"><b>Start Movement</b><span>Item becomes In Transit.</span></div><div class="arrow">→</div><div class="step"><b>Mark Arrived</b><span>IMS applies final location/status.</span></div></div>
+  <div class="note warn"><strong>Never skip arrival.</strong> Starting a movement and physically receiving the item are two different events. If it has arrived, complete the arrival step so Stock Inventory reflects reality.</div>
 </section>
 
 <section id="service" class="section">
-  <div class="section-title"><div><div class="kicker">04 · Service Cycle</div><h2>Inspection, maintenance and machine shop</h2></div><div class="sub">A service cycle records work performed on items without losing their operational history.</div></div>
-  <div class="flow">
-    <div class="step"><b>Start Service</b><span>Select service type, source, provider and items.</span></div><div class="arrow">→</div>
-    <div class="step"><b>Under Service</b><span>Item status is controlled by the service workflow.</span></div><div class="arrow">→</div>
-    <div class="step"><b>End Service</b><span>Record Pass or Failed.</span></div><div class="arrow">→</div>
-    <div class="step"><b>Return if Needed</b><span>Off-site items may require a return transit.</span></div><div class="arrow">→</div>
-    <div class="step"><b>Arrive</b><span>IMS restores the correct destination status.</span></div>
-  </div>
-  <div class="note">Failed service items remain Not Available until the next valid action. Restart Failed Service keeps the item at its current service location.</div>
+  <div class="section-title"><div><div class="kicker">04 · Service Cycle</div><h2>Track inspection, maintenance and workshop activity</h2></div><div class="sub">Service Cycle records work performed on an item while preserving its identity, location history and availability status.</div></div>
+  <div class="flow"><div class="step"><b>Select Service Type</b><span>Choose the correct service activity.</span></div><div class="arrow">→</div><div class="step"><b>Select Source</b><span>Warehouse, Client or Supplier as allowed.</span></div><div class="arrow">→</div><div class="step"><b>Add Item(s)</b><span>Fast Pick or Browse eligible stock.</span></div><div class="arrow">→</div><div class="step"><b>Start Service</b><span>IMS records the active service cycle.</span></div><div class="arrow">→</div><div class="step"><b>Complete Service</b><span>Record Pass / Failed and return steps if required.</span></div></div>
+  <div class="grid two" style="margin-top:14px"><div class="card"><h3>Pass</h3><p>Use when the service requirement is completed satisfactorily. Follow any required return/arrival step for off-site work.</p></div><div class="card"><h3>Failed</h3><p>Use when the item should not return to normal available use. Failed items may remain Not Available until the next valid service or disposition action.</p></div></div>
+  <div class="note"><strong>Rule:</strong> Do not create a second active service cycle for an item already under service. Finish or restart the existing service workflow correctly.</div>
 </section>
 
-<section id="reservation" class="section">
-  <div class="section-title"><div><div class="kicker">05 · Reservation</div><h2>Reserve warehouse stock for a client</h2></div><div class="sub">Reservation locks selected Available stock so it cannot be used by another reservation or movement accidentally.</div></div>
-  <div class="flow">
-    <div class="step"><b>Select Warehouse</b><span>Only stock at this location is eligible.</span></div><div class="arrow">→</div>
-    <div class="step"><b>Select Client</b><span>Add expected date and reference if available.</span></div><div class="arrow">→</div>
-    <div class="step"><b>Add Items</b><span>Fast Pick or Browse Available items.</span></div><div class="arrow">→</div>
-    <div class="step"><b>Reserve</b><span>Selected stock becomes Reserved.</span></div><div class="arrow">→</div>
-    <div class="step"><b>Use in Movement</b><span>Client delivery can preload the reservation.</span></div>
-  </div>
-</section>
-
-<section id="r2r" class="section">
-  <div class="section-title"><div><div class="kicker">06 · Rent-to-Rent</div><h2>Supplier-owned inventory</h2></div><div class="sub">R2R tracks third-party ownership and the final return to the supplier. Physical transfers remain part of normal Movement history.</div></div>
-  <div class="flow">
-    <div class="step"><b>Register R2R Items</b><span>Enter supplier, PO, R2R SN and destination warehouse.</span></div><div class="arrow">→</div>
-    <div class="step"><b>Incoming Transit</b><span>Supplier → warehouse.</span></div><div class="arrow">→</div>
-    <div class="step"><b>Arrive Warehouse</b><span>Stock becomes Available.</span></div><div class="arrow">→</div>
-    <div class="step"><b>Use Normally</b><span>Movement and Service apply as needed.</span></div><div class="arrow">→</div>
-    <div class="step"><b>Return to Supplier</b><span>Final arrival becomes Returned to Owner.</span></div>
-  </div>
-</section>
-
-<section id="incident" class="section">
-  <div class="section-title"><div><div class="kicker">07 · Incident</div><h2>Missing, stolen and recovery</h2></div><div class="sub">Use Incident when an item is missing or stolen. Recovery restores the previous inventory state where possible.</div></div>
-  <div class="grid two">
-    <div class="card"><h3>Report Incident</h3><p>Find the exact item, choose Missing or Stolen, enter date/reference/remark and submit.</p></div>
-    <div class="card"><h3>Recover Item</h3><p>Use Recover Item from Open Incidents. IMS restores the previous stock balances and location recorded before the incident.</p></div>
-  </div>
-</section>
-
-<section id="disposition" class="section">
-  <div class="section-title"><div><div class="kicker">08 · Disposition</div><h2>Permanent exit from active stock</h2></div><div class="sub">Disposition is final. Use it only when the item is sold, scrapped, written off, returned to supplier or otherwise permanently exited.</div></div>
-  <div class="grid two">
-    <div class="card"><h3>Before disposition</h3><p>The item must not still be At Client, In Transit, under Maintenance/Inspection or Reserved. Return or release it first.</p></div>
-    <div class="card"><h3>Complete disposition</h3><p>Find the item, select the outcome, enter date/reference/counterparty and save. IMS stores the terminal status and history.</p></div>
-  </div>
+<section id="inventory" class="section">
+  <div class="section-title"><div><div class="kicker">05 · Stock Inventory</div><h2>Check the current truth of every item</h2></div><div class="sub">Stock Inventory is where users confirm an item's current ownership, status and physical location after operations are completed.</div></div>
+  <div class="grid two"><div class="card"><h3>What to check</h3><p>Confirm Wellora SN / R2R SN, Description, ownership, quantity, Current Status, Current Location and other item specifications. Use inventory as the current operational view.</p></div><div class="card"><h3>When to check it</h3><p>After registration, arrival, service completion, reservation changes, incident recovery and disposition. If the displayed state is wrong, fix the operational workflow that caused it rather than manually inventing a new state.</p></div></div>
+  <div class="note"><strong>Current state vs history:</strong> Stock Inventory tells you where the item is now. Movement, Service, Reservation, Incident, Disposition and operational logs explain how it got there.</div>
 </section>
 
 <section id="documents" class="section">
-  <div class="section-title"><div><div class="kicker">09 · Documents</div><h2>Client and supplier commercial references</h2></div><div class="sub">Documents connects operational item history with commercial references such as client POs and supplier POs.</div></div>
-  <div class="grid">
-    <div class="card"><h3>Client Documents</h3><p>Review client PO information, linked items, quantities, periods and related commercial status.</p></div>
-    <div class="card"><h3>Supplier Documents</h3><p>Review supplier-side references associated with incoming stock and R2R ownership.</p></div>
-    <div class="card"><h3>Linked Items</h3><p>Documents are meant to show the items related to each commercial reference, individually or as a batch.</p></div>
-  </div>
+  <div class="section-title"><div><div class="kicker">06 · Documents</div><h2>Connect operations to commercial references</h2></div><div class="sub">Documents links operational activity to the client and supplier commercial references used by the business.</div></div>
+  <div class="grid two"><div class="card"><h3>Client side</h3><p>Use client commercial records to review client PO information and the items/activities connected to that reference.</p></div><div class="card"><h3>Supplier side</h3><p>Use supplier commercial records to review supplier PO information and the registered or operational items connected to that supplier reference.</p></div></div>
+  <div class="list"><div class="item"><span class="dot"></span><div><strong>Use consistent PO numbers.</strong> A mistyped PO may create a separate commercial reference instead of linking to the correct one.</div></div><div class="item"><span class="dot"></span><div><strong>Documents support operations.</strong> Movement and registration remain the authoritative physical stock actions.</div></div></div>
 </section>
 
-<section id="status" class="section">
-  <div class="section-title"><div><div class="kicker">10 · Status Guide</div><h2>Common inventory statuses</h2></div><div class="sub">Status describes the current operational condition of stock. Location tells you where it physically belongs.</div></div>
-  <table class="table">
-    <thead><tr><th>Status</th><th>Meaning</th><th>Typical next action</th></tr></thead>
-    <tbody>
-      <tr><td><span class="tag green">Available</span></td><td>Ready for normal warehouse use.</td><td>Movement, Service, Reservation or other valid operation.</td></tr>
-      <tr><td><span class="tag blue">At Client</span></td><td>Physically with a client.</td><td>Return from Client, Service where allowed, or continue rental.</td></tr>
-      <tr><td><span class="tag purple">Reserved</span></td><td>Warehouse stock allocated to a reservation.</td><td>Use the reservation in client delivery or cancel/release it.</td></tr>
-      <tr><td><span class="tag amber">In Transit</span></td><td>Movement has started but arrival is not yet confirmed.</td><td>Mark Arrived when the item reaches destination.</td></tr>
-      <tr><td><span class="tag amber">Maintenance</span></td><td>Item is under service or waiting for service return.</td><td>End Service, Restart Failed Service or Return.</td></tr>
-      <tr><td><span class="tag red">Not Available</span></td><td>Item is present but not currently available for normal use.</td><td>Resolve service/failure or other operational restriction.</td></tr>
-      <tr><td><span class="tag red">Missing / Stolen</span></td><td>Active incident exists.</td><td>Recover Item when found.</td></tr>
-      <tr><td><span class="tag red">Disposed / Returned</span></td><td>Item has permanently exited active stock.</td><td>No normal operational movement.</td></tr>
-    </tbody>
-  </table>
+<section id="r2r" class="section">
+  <div class="section-title"><div><div class="kicker">07 · R2R</div><h2>Manage supplier-owned Rent-to-Rent stock</h2></div><div class="sub">R2R keeps supplier ownership visible while the item is received, used, serviced and eventually returned to its owner.</div></div>
+  <div class="flow"><div class="step"><b>Register / Import R2R</b><span>Supplier, Our PO, R2R SN and destination warehouse are key.</span></div><div class="arrow">→</div><div class="step"><b>Incoming Transit</b><span>Supplier → Warehouse.</span></div><div class="arrow">→</div><div class="step"><b>Mark Arrived</b><span>Item becomes usable warehouse stock.</span></div><div class="arrow">→</div><div class="step"><b>Operate Normally</b><span>Movement / Service can be used as required.</span></div><div class="arrow">→</div><div class="step"><b>Return to Supplier</b><span>Final R2R return workflow.</span></div></div>
+  <div class="note warn"><strong>Ownership does not change.</strong> An R2R item may sit in a Wellora warehouse or go to a client, but it remains supplier-owned. Do not convert it into an Owned item merely because it is physically in Wellora custody.</div>
+</section>
+
+<section id="reservation" class="section">
+  <div class="section-title"><div><div class="kicker">08 · Reservation</div><h2>Hold available warehouse stock for a planned client job</h2></div><div class="sub">Reservation prevents selected Available items from being accidentally committed elsewhere before the planned client movement.</div></div>
+  <div class="flow"><div class="step"><b>Select Warehouse</b><span>Choose the stock location.</span></div><div class="arrow">→</div><div class="step"><b>Select Client / Details</b><span>Add the reservation information.</span></div><div class="arrow">→</div><div class="step"><b>Add Available Items</b><span>Fast Pick or Browse Eligible Items.</span></div><div class="arrow">→</div><div class="step"><b>Reserve</b><span>Items become Reserved.</span></div><div class="arrow">→</div><div class="step"><b>Use / Release</b><span>Use the reservation for delivery or release it when no longer needed.</span></div></div>
+  <div class="note"><strong>Reserved is not delivered.</strong> Reservation only holds the stock. Use Movement when the item physically leaves the warehouse.</div>
+</section>
+
+<section id="disposition" class="section">
+  <div class="section-title"><div><div class="kicker">09 · Disposition</div><h2>Record a permanent inventory exit</h2></div><div class="sub">Disposition is for final outcomes such as sold, scrapped, written off, returned to supplier/owner or another approved permanent exit.</div></div>
+  <div class="grid two"><div class="card"><h3>Before disposition</h3><p>Confirm the item is physically in a valid state for disposal. It should not still be At Client, In Transit, Reserved or actively under Maintenance / Inspection.</p></div><div class="card"><h3>Complete disposition</h3><p>Find the exact item, select the correct final outcome, enter the relevant date/reference/counterparty and save the disposition.</p></div></div>
+  <div class="note danger"><strong>Disposition is a terminal action.</strong> Do not use it as a shortcut for temporary unavailability, service failure, missing stock or a normal location transfer.</div>
+</section>
+
+<section id="incident" class="section">
+  <div class="section-title"><div><div class="kicker">10 · Incident</div><h2>Report Missing or Stolen items and record recovery</h2></div><div class="sub">Incident protects the stock record when an item cannot be physically accounted for.</div></div>
+  <div class="grid two"><div class="card"><h3>Report Incident</h3><p>Find the exact item, choose the incident type, enter the event date/reference/remark and submit. IMS prevents a second active incident on the same item.</p></div><div class="card"><h3>Recover Item</h3><p>When the physical item is recovered, use the recovery action from the open incident. IMS restores the appropriate prior stock state where supported by the workflow.</p></div></div>
+  <div class="note warn"><strong>Incident is not disposition.</strong> Missing or Stolen means the item may still be recovered. Use Disposition only when a separate approved permanent exit is required.</div>
 </section>
 
 <section class="section">
-  <div class="card">
-    <div class="kicker">Good Practice</div>
-    <h2 style="font-size:24px;margin:0 0 8px">Before you click Save</h2>
-    <div class="list">
-      <div class="item"><span class="dot"></span><div><strong>Identity:</strong> confirm the Wellora SN / R2R SN is the correct physical item.</div></div>
-      <div class="item"><span class="dot"></span><div><strong>Location:</strong> confirm the item is really at the selected source.</div></div>
-      <div class="item"><span class="dot"></span><div><strong>Reference:</strong> check PO, transfer, receiving, service or incident references carefully.</div></div>
-      <div class="item"><span class="dot"></span><div><strong>Arrival:</strong> do not leave completed physical movements stuck In Transit.</div></div>
-      <div class="item"><span class="dot"></span><div><strong>History:</strong> use IMS operations rather than manually changing inventory status whenever a workflow exists.</div></div>
-    </div>
-  </div>
+  <div class="section-title"><div><div class="kicker">Daily Rule</div><h2>Follow the physical item</h2></div><div class="sub">The easiest way to use IMS correctly is to ask what has physically happened to the item.</div></div>
+  <table class="table"><thead><tr><th>What happened?</th><th>Use</th></tr></thead><tbody>
+    <tr><td>New item entered IMS</td><td><span class="tag blue">Registration</span></td></tr>
+    <tr><td>Item changed physical location</td><td><span class="tag blue">Movement</span></td></tr>
+    <tr><td>Item sent for inspection / maintenance / workshop work</td><td><span class="tag purple">Service Cycle</span></td></tr>
+    <tr><td>Need to know where/status of item now</td><td><span class="tag green">Stock Inventory</span></td></tr>
+    <tr><td>Need to review PO/commercial linkage</td><td><span class="tag blue">Documents</span></td></tr>
+    <tr><td>Supplier-owned R2R stock arriving or returning</td><td><span class="tag purple">R2R</span></td></tr>
+    <tr><td>Available stock must be held for a client</td><td><span class="tag amber">Reservation</span></td></tr>
+    <tr><td>Item permanently exits active inventory</td><td><span class="tag red">Disposition</span></td></tr>
+    <tr><td>Item is missing or stolen</td><td><span class="tag red">Incident</span></td></tr>
+  </tbody></table>
 </section>
 </main>
-
-<footer><div class="wrap">Wellora Energy · IMS User Guide · Standalone HTML</div></footer>
+<footer><div class="wrap">Wellora Energy · IMS User Guide · Always verify item identity, location, status and reference before submitting an operation.</div></footer>
 </body>
 </html>
