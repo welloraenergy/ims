@@ -22,11 +22,13 @@ function applyAutoExpected(){
   const input=document.getElementById('docExpected');
   if(!input)return;
   labelText(input);
+  if(isClientPO())input.value=String(linkedCount());
   input.readOnly=true;
+  input.disabled=true;
   input.setAttribute('aria-readonly','true');
+  input.setAttribute('aria-disabled','true');
   input.title='Calculated automatically by IMS';
   input.classList.add('opacity-80','cursor-not-allowed');
-  if(isClientPO())input.value=String(linkedCount());
 }
 
 // Re-apply whenever the Documents module renders/open a PO.
