@@ -41,12 +41,32 @@ function metrics(ref){
   const extendedSet=new Set(extendedIds);
   const currentIds=ref?.commercialSide==='client'
     ? linkedIds.filter(id=>!extendedSet.has(id)&&atClient(itemCache.get(id),ref.businessId))
-    : linkedIds.filter(id=>!extendedSet.has(id)&&itemCache.get(id));
+    : linkedIds.filter(id=>{
+        if(extendedSet.has(id))return false;
+        const item=itemCache.get(id);
+        return !!item&&item.status!=='Returned to Owner';
+      });
   const extended=extendedSet.size;
   const current=new Set(currentIds).size;
   const linked=linkedIds.length;
   const returned=Math.max(0,linked-extended-current);
   return{linked,extended,returned,current};
+}
+
+function precleanDetail(){
+  const detail=document.getElementById('docDetail');
+  if(!detail?.querySelector('section'))return;
+  const expected=detail.querySelector('#docExpected');
+  if(expected){
+    const label=expected.closest('label');
+    if(label)label.style.display='none';
+  }
+  const subtitle=detail.querySelector('h2')?.nextElementSibling;
+  if(subtitle){
+    for(const node of [...subtitle.childNodes]){
+      if(node.nodeType===Node.TEXT_NODE)node.textContent=node.textContent.replace(/\s*·\s*\d+\s+current\/linked unit\(s\)/i,'');
+    }
+  }
 }
 
 async function enhanceTable(){
@@ -92,6 +112,7 @@ function findDetailRef(){
 }
 
 async function enhanceDetail(){
+  precleanDetail();
   const detail=document.getElementById('docDetail');if(!detail?.querySelector('section'))return;
   const ref=findDetailRef();
   if(ref){
@@ -101,9 +122,8 @@ async function enhanceDetail(){
   const fallbackLinked=detail.querySelectorAll('.openDocItem[data-id]').length;
   const m=ref?metrics(ref):{linked:fallbackLinked,extended:0,returned:0,current:fallbackLinked};
 
-  // Retain a hidden legacy value so the existing save handler remains compatible.
   const expected=document.getElementById('docExpected');
-  if(expected){expected.value=String(m.linked);expected.closest('label')?.classList.add('hidden');}
+  if(expected){expected.value=String(m.linked);const label=expected.closest('label');if(label)label.style.display='none';}
 
   let box=detail.querySelector('#poLifecycleMetrics');
   if(!box){
@@ -123,16 +143,17 @@ async function enhanceDetail(){
 
 async function enhance(){
   if(running)return;running=true;
-  try{await enhanceTable();await enhanceDetail();}
+  try{precleanDetail();await enhanceTable();await enhanceDetail();}
   catch(err){console.warn('IMS PO lifecycle metrics failed:',err);}
   finally{running=false;}
 }
 function schedule(){clearTimeout(timer);timer=setTimeout(enhance,60);}
 
 document.addEventListener('click',e=>{
-  const b=e.target.closest?.('.openPO[data-key],.openCyclePO[data-key]');if(b?.dataset.key){lastKey=b.dataset.key;schedule();}
+  const b=e.target.closest?.('.openPO[data-key],.openCyclePO[data-key]');if(b?.dataset.key){lastKey=b.dataset.key;setTimeout(precleanDetail,0);schedule();}
 },true);
-new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
+new MutationObserver(()=>{precleanDetail();schedule();}).observe(document.documentElement,{childList:true,subtree:true});
 window.addEventListener('ims:auth-ready',schedule);
 window.addEventListener('ims:invoices-ready',schedule);
+precleanDetail();
 schedule();
