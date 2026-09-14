@@ -42,7 +42,7 @@ window.IMSRequiredFields=Object.freeze({apply:applyRequiredFields});
 
 const ROLE=currentRole();
 const byId=id=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
 
 function allowedNavigation(){return NAVIGATION.filter(x=>!x.permission||can(x.permission));}
 function rolePage(role){return role==='superadmin'?'superadmin.html':role==='manager'?'manager.html':role==='admin'?'admin.html':'index.html';}
@@ -50,7 +50,14 @@ function rolePage(role){return role==='superadmin'?'superadmin.html':role==='man
 function renderShell(profile,user){
   document.body.innerHTML=`<div class="min-h-screen bg-slate-950 text-slate-100 lg:flex">
     <aside class="lg:w-64 lg:min-h-screen bg-slate-900 border-r border-slate-800 p-4 lg:sticky lg:top-0 lg:h-screen">
-      <div class="flex items-center justify-between lg:block mb-4"><div><div class="text-xl font-black tracking-tight text-red-400">IMS</div><div class="text-[11px] text-slate-500 uppercase">${esc(profile.role)}</div></div><button id="logoutBtn" class="lg:hidden bg-slate-800 px-3 py-2 rounded-lg text-xs">Logout</button></div>
+      <div class="relative mb-5">
+        <div class="flex flex-col items-center text-center">
+          <img src="./icon-192.png" width="192" height="192" alt="Wellora Energy" class="w-20 h-20 sm:w-24 sm:h-24 object-contain mb-2" draggable="false">
+          <div class="text-xl font-black tracking-tight text-white">IMS</div>
+          <div class="text-[11px] font-bold uppercase tracking-[0.18em]" style="color:#d3af36">${esc(profile.role)}</div>
+        </div>
+        <button id="logoutBtn" class="absolute right-0 top-0 lg:hidden bg-slate-800 px-3 py-2 rounded-lg text-xs">Logout</button>
+      </div>
       <nav id="navTabs" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-1 gap-2">${allowedNavigation().map(x=>`<button data-tab="${esc(x.id)}" class="navBtn text-left px-3 py-2.5 rounded-xl text-xs font-semibold bg-slate-800/50 hover:bg-slate-800">${esc(x.label)}</button>`).join('')}</nav>
       <div class="hidden lg:block mt-6 pt-4 border-t border-slate-800"><div id="currentUser" class="text-xs text-slate-400 break-all">${esc(profile.email||user.email||'')}</div><button id="logoutBtnDesktop" class="mt-3 w-full bg-red-600 hover:bg-red-500 py-2 rounded-lg text-xs font-bold">Logout</button></div>
     </aside>
