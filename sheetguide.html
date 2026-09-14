@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMS Sheet App User Guide</title>
+<meta name="description" content="Operational user guide for the Wellora Energy IMS Google Sheets / Apps Script application.">
+<style>
+:root{--bg:#173238;--panel:#0b2026;--panel2:#0f2a31;--line:#16434d;--cyan:#36d1dc;--cyan2:#21a9b6;--text:#e7f7f8;--muted:#9dbbc0;--green:#5ee0a0;--amber:#f6c76b;--red:#ff8a8a;--blue:#73b7ff;--purple:#c4a7ff;--max:1180px}
+*{box-sizing:border-box}html{scroll-behavior:smooth;background:var(--bg)}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.55}
+a{color:inherit}.wrap{width:min(var(--max),calc(100% - 28px));margin:auto}.hero{padding:48px 0 26px}.badge{display:inline-flex;align-items:center;border:1px solid var(--line);background:#0a1f25;padding:7px 11px;border-radius:999px;color:#bfeef1;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+h1{font-size:clamp(34px,6vw,62px);line-height:1.03;margin:18px 0 14px;letter-spacing:-.04em}.hero p{max-width:850px;color:var(--muted);font-size:clamp(16px,2vw,19px)}
+.quicknav{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}.quicknav a{text-decoration:none;border:1px solid var(--line);background:#0b2026;padding:9px 12px;border-radius:10px;font-size:13px;color:#d5f3f5}.quicknav a:hover{border-color:var(--cyan2);background:#0f2a31}
+.section{padding:30px 0}.section-title{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:16px}.section h2{margin:0;font-size:clamp(24px,4vw,34px);letter-spacing:-.025em}.kicker{color:var(--cyan);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px}.sub{color:var(--muted);font-size:14px;max-width:720px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.card h3{margin:0 0 7px;font-size:17px}.card p{margin:0;color:var(--muted);font-size:14px}
+.flow{display:flex;align-items:stretch;gap:8px;overflow-x:auto;padding-bottom:2px}.step{flex:1 0 150px;min-width:150px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}.step b{display:block;font-size:13px;margin-bottom:4px}.step span{display:block;font-size:12px;color:var(--muted)}.arrow{align-self:center;color:var(--cyan);font-size:22px;font-weight:800;padding:0 2px}
+.note{border-left:3px solid var(--cyan2);background:#0a1e24;border-radius:10px;padding:12px 14px;color:#cce8eb;font-size:13px;margin-top:12px}.warn{border-left-color:var(--amber);background:#211d11;color:#f4e4bc}.danger{border-left-color:var(--red);background:#221416;color:#ffd1d1}
+.list{display:grid;gap:9px;margin-top:12px}.item{display:flex;gap:10px;align-items:flex-start}.dot{width:8px;height:8px;border-radius:999px;background:var(--cyan);margin-top:7px;flex:0 0 auto}.item div{font-size:14px;color:var(--muted)}.item strong{color:var(--text)}
+.tablewrap{overflow-x:auto}.table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:#091b20}.table th,.table td{text-align:left;padding:11px 12px;border-bottom:1px solid #123640;font-size:13px;vertical-align:top}.table th{background:#0d252c;color:#c9eef0}.table td{color:var(--muted)}.table tr:last-child td{border-bottom:0}
+.tag{display:inline-block;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:800;border:1px solid currentColor}.green{color:var(--green)}.amber{color:var(--amber)}.red{color:var(--red)}.blue{color:var(--blue)}.purple{color:var(--purple)}
+.sequence{counter-reset:seq;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.sequence a{counter-increment:seq;text-decoration:none;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px 14px;font-size:14px}.sequence a:before{content:counter(seq,decimal-leading-zero) "  ";color:var(--cyan);font-weight:800}.sequence a:hover{border-color:var(--cyan2);background:var(--panel2)}
+.callout{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}.callout>div{border:1px solid var(--line);background:#0a1f25;border-radius:12px;padding:12px}.callout b{display:block;font-size:13px;margin-bottom:4px}.callout span{font-size:12px;color:var(--muted)}
+footer{padding:38px 0 54px;color:#76989e;font-size:12px;text-align:center}
+@media(max-width:860px){.grid,.grid.two,.sequence,.callout{grid-template-columns:1fr}.section-title{display:block}.flow{display:grid;overflow:visible}.step{min-width:0}.arrow{transform:rotate(90deg);text-align:center;padding:0}.table{min-width:720px}}
+@media(max-width:520px){.hero{padding-top:34px}.wrap{width:min(100% - 20px,var(--max))}.card{padding:15px}.quicknav a{font-size:12px;padding:8px 10px}.section{padding:23px 0}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <div class="badge">Wellora Energy · IMS Sheet App</div>
+  <h1>IMS Sheet App User Guide</h1>
+  <p>This guide is for the Google Sheets + Apps Script IMS web app. It follows the Sheet App's current modules, validation rules and operating sequence: set up masters first, register the item, then use the correct operational module for every physical or commercial event.</p>
+  <nav class="quicknav" aria-label="Guide sections">
+    <a href="#overview">Overview</a><a href="#setup">1. Masters & Businesses</a><a href="#registration">2. Registration</a><a href="#movement">3. Movement</a><a href="#service">4. Service Cycle</a><a href="#inventory">5. Stock Inventory</a><a href="#documents">6. Documents</a><a href="#r2r">7. R2R</a><a href="#reservation">8. Reservation</a><a href="#disposition">9. Disposition</a><a href="#incident">10. Incident</a>
+  </nav>
+</div></header>
+
+<main class="wrap">
+<section id="overview" class="section">
+  <div class="section-title"><div><div class="kicker">Sheet App Principles</div><h2>Know what each module is responsible for</h2></div><div class="sub">The Sheet App works best when users record each event in the module that owns that event instead of manually changing status or location.</div></div>
+  <div class="grid">
+    <div class="card"><h3>Inventory = current physical state</h3><p>Stock Inventory tells you where an item is now, its current status, and its chronological history. It is not where users manually create physical events.</p></div>
+    <div class="card"><h3>Movement = physical transition</h3><p>When an item physically changes location, use Movement. Starting a movement puts the item In Transit; arrival applies the final location and status.</p></div>
+    <div class="card"><h3>Documents = commercial agreement</h3><p>Documents preserve the PO, invoice, period and permanent commercial item relationship. A physical return does not remove an item from the PO history.</p></div>
+  </div>
+  <div class="note warn"><strong>Do not update the Google Sheet manually to simulate an operation.</strong> The web app applies the related validation, status, location and history changes together.</div>
+</section>
+
+<section class="section">
+  <div class="section-title"><div><div class="kicker">Training Sequence</div><h2>Recommended order of work</h2></div><div class="sub">Earlier steps provide the master data and item identity required by later modules.</div></div>
+  <div class="sequence">
+    <a href="#setup">Global Settings & Businesses</a><a href="#registration">Register / Import Items</a><a href="#movement">Movement</a><a href="#service">Service Cycle</a><a href="#inventory">Stock Inventory</a><a href="#documents">Documents</a><a href="#r2r">Rent-to-Rent</a><a href="#reservation">Reservation</a><a href="#disposition">Disposition</a><a href="#incident">Incident</a>
+  </div>
+</section>
+
+<section id="setup" class="section">
+  <div class="section-title"><div><div class="kicker">01 · Masters & Registration</div><h2>Set up Global Settings and Businesses first</h2></div><div class="sub">The Masters & Registration module contains the controlled reference data used by the rest of the Sheet App.</div></div>
+  <div class="grid two">
+    <div class="card"><h3>Global Settings</h3><p>Maintain controlled values such as warehouse, item type, unit, category, size, grade, PPF, connection, range, brand, model and weight unit. Reuse existing types; do not create arbitrary duplicates.</p></div>
+    <div class="card"><h3>Businesses</h3><p>Maintain complete business information and business roles such as Supplier, Client and Service Provider. Business Details is for company information and commercial documents, not operational item history.</p></div>
+  </div>
+  <div class="list">
+    <div class="item"><span class="dot"></span><div><strong>Item Type controls quantity mode.</strong> A Single item locks Default Qty to 1; unrelated master types do not control quantity.</div></div>
+    <div class="item"><span class="dot"></span><div><strong>Use clean master values.</strong> If a required warehouse, business or specification is missing, add the correct master instead of typing a workaround into an operation.</div></div>
+    <div class="item"><span class="dot"></span><div><strong>Disable instead of inventing replacements.</strong> Keep master data consistent so dropdowns and validation remain dependable.</div></div>
+  </div>
+</section>
+
+<section id="registration" class="section">
+  <div class="section-title"><div><div class="kicker">02 · Registration</div><h2>Create the physical item's permanent identity</h2></div><div class="sub">Owned and Rent-to-Rent items are imported separately. The Sheet App uses Excel files with the expected first-sheet column structure.</div></div>
+  <div class="grid two">
+    <div class="card"><h3>Owned Item Import</h3><p>Use for Wellora-owned equipment. Each physical serialized item uses its Wellora SN and its purchase/master information. Duplicate serial numbers are checked before records are written.</p></div>
+    <div class="card"><h3>R2R Item Import</h3><p>Use for supplier-owned Rent-to-Rent equipment. Each item uses its R2R SN, supplier, Our PO, rental dates and destination warehouse information.</p></div>
+  </div>
+  <div class="flow" style="margin-top:14px"><div class="step"><b>Prepare Excel</b><span>Use the exact IMS headers and first worksheet.</span></div><div class="arrow">→</div><div class="step"><b>Preview / Validate</b><span>Check required fields and master values.</span></div><div class="arrow">→</div><div class="step"><b>Duplicate SN Check</b><span>Resolve existing Wellora SN / R2R SN before import.</span></div><div class="arrow">→</div><div class="step"><b>Import</b><span>Create the master item records.</span></div><div class="arrow">→</div><div class="step"><b>Confirm in Inventory</b><span>Verify the resulting item state.</span></div></div>
+  <div class="note warn"><strong>R2R incoming:</strong> registration/import can create the normal supplier-to-warehouse incoming movement. Complete arrival when the item is physically received; do not manually force it Available.</div>
+</section>
+
+<section id="movement" class="section">
+  <div class="section-title"><div><div class="kicker">03 · Main Workspace · Movement</div><h2>Record every physical location change</h2></div><div class="sub">Movement handles supplier, warehouse and client transitions. The eligible-item picker is filtered by the selected movement type and source.</div></div>
+  <div class="grid">
+    <div class="card"><h3>Receive from Supplier</h3><p>Supplier → Warehouse. Reference: Wellora PO. Start = In Transit; arrival normally makes the item Available in the destination warehouse.</p></div>
+    <div class="card"><h3>Warehouse Transfer</h3><p>Warehouse → Warehouse. Reference: Internal Transfer No. Use this for physical movement between Wellora locations.</p></div>
+    <div class="card"><h3>Deliver to Client</h3><p>Warehouse → Client. Reference: Client PO. Arrival makes the item At Client at the selected client location.</p></div>
+  </div>
+  <div class="grid two" style="margin-top:14px"><div class="card"><h3>Return from Client</h3><p>Client → Warehouse. Reference: Receiving No. Use this when the item physically returns from the client.</p></div><div class="card"><h3>Item selection</h3><p>Use Fast Pick when you know the exact Wellora SN / R2R SN or exact Description, or browse eligible items. Browse pages are limited to 20 items for operational selection.</p></div></div>
+  <div class="flow" style="margin-top:14px"><div class="step"><b>Select movement</b><span>Choose the correct physical event.</span></div><div class="arrow">→</div><div class="step"><b>Select source & destination</b><span>Use the real physical locations.</span></div><div class="arrow">→</div><div class="step"><b>Add eligible items</b><span>Fast Pick or Browse Eligible Items.</span></div><div class="arrow">→</div><div class="step"><b>Start Movement</b><span>Item becomes In Transit.</span></div><div class="arrow">→</div><div class="step"><b>Mark Arrived</b><span>Final status/location is applied.</span></div></div>
+  <div class="note warn"><strong>Never skip arrival.</strong> Starting the movement and receiving the item are separate events. Stock Inventory will remain In Transit until arrival is completed.</div>
+</section>
+
+<section id="service" class="section">
+  <div class="section-title"><div><div class="kicker">04 · Main Workspace · Service Cycle</div><h2>Track maintenance, inspection and return</h2></div><div class="sub">Service Cycle controls items that enter maintenance or inspection from an allowed warehouse, client or supplier source.</div></div>
+  <div class="flow"><div class="step"><b>Start Service</b><span>Select service type, mode, source, provider/reference and eligible items.</span></div><div class="arrow">→</div><div class="step"><b>End Service</b><span>Record the result when the work is complete.</span></div><div class="arrow">→</div><div class="step"><b>Restart Failed</b><span>Restart a failed cycle when further work is required.</span></div><div class="arrow">→</div><div class="step"><b>Start Return</b><span>Begin return transit from the service location.</span></div><div class="arrow">→</div><div class="step"><b>Return Arrival</b><span>Complete the physical return and final item state.</span></div></div>
+  <div class="note danger"><strong>Failed service:</strong> a failed item is Not Available until the next valid service/return action restores an allowed operational state.</div>
+</section>
+
+<section id="inventory" class="section">
+  <div class="section-title"><div><div class="kicker">05 · Stock Inventory</div><h2>Use Inventory to understand the current state</h2></div><div class="sub">Stock Inventory is the operational view of item master data plus current status/location. It is optimized for browsing and inspection rather than editing physical events.</div></div>
+  <div class="grid">
+    <div class="card"><h3>Inventory list</h3><p>Browse current items with server-side Sheet App paging. The inventory list uses 50 records per page.</p></div>
+    <div class="card"><h3>Item Details</h3><p>Open an item to see complete master information with current Status and Current Location shown prominently.</p></div>
+    <div class="card"><h3>Chronological History</h3><p>Item history is loaded when Details opens and can include registration, movement, service, reservation, documents/extensions, incidents and disposition.</p></div>
+  </div>
+  <div class="note"><strong>Inventory tells you what is true now.</strong> Use the source operational modules to create or correct the event that changes that state.</div>
+</section>
+
+<section id="documents" class="section">
+  <div class="section-title"><div><div class="kicker">06 · Documents</div><h2>Preserve permanent commercial relationships</h2></div><div class="sub">Documents represents the commercial agreement and scope. It is deliberately separated from the item's current physical status/location.</div></div>
+  <div class="grid two">
+    <div class="card"><h3>PO-linked items are permanent</h3><p>Once an item is linked to a PO, the commercial relationship remains in that PO record even if the item later returns to a warehouse.</p></div>
+    <div class="card"><h3>No current status/location in PO item list</h3><p>Current physical Status and Current Location belong to Stock Inventory. Documents focuses on the commercial record.</p></div>
+    <div class="card"><h3>Extension = new official PO</h3><p>An extension requires a new PO number, agreed amount, currency, date range/new due date and the selected extended items. The old PO remains historical and immutable.</p></div>
+    <div class="card"><h3>Invoices can span POs</h3><p>The commercial model supports many-to-many PO ↔ invoice allocation. Allocations should reconcile to the invoice total and remain within the same business relationship.</p></div>
+  </div>
+  <div class="callout"><div><b>Original PO</b><span>Keeps all originally linked items permanently.</span></div><div><b>Extension PO</b><span>Contains only the items officially extended under the new PO.</span></div><div><b>Physical return</b><span>Handled separately through Movement; it does not delete the commercial link.</span></div></div>
+  <div class="note warn"><strong>Business Details rule:</strong> Business Details shows full business information and commercial documents. Operational item tables, movements, service, reservation, disposition and incidents are not shown at the business level.</div>
+</section>
+
+<section id="r2r" class="section">
+  <div class="section-title"><div><div class="kicker">07 · Rent-to-Rent</div><h2>Track supplier-owned stock separately</h2></div><div class="sub">R2R items remain supplier-owned. Registration creates the identity; physical transfers still follow the normal movement state model.</div></div>
+  <div class="flow"><div class="step"><b>Register / Import</b><span>Create supplier-owned R2R item with supplier and Our PO.</span></div><div class="arrow">→</div><div class="step"><b>Incoming Transit</b><span>Supplier → destination warehouse.</span></div><div class="arrow">→</div><div class="step"><b>Incoming Arrival</b><span>Item becomes available at the warehouse when received.</span></div><div class="arrow">→</div><div class="step"><b>Normal Operations</b><span>Use Movement, Service and other eligible workflows.</span></div><div class="arrow">→</div><div class="step"><b>Final Supplier Return</b><span>Return transit and arrival end as Returned to Owner.</span></div></div>
+  <div class="note"><strong>R2R Operations list:</strong> operational queues are paged at 20 rows per page to keep the Sheet App responsive.</div>
+</section>
+
+<section id="reservation" class="section">
+  <div class="section-title"><div><div class="kicker">08 · Reservation</div><h2>Reserve available warehouse items before delivery</h2></div><div class="sub">Reservation holds eligible stock for a client without physically moving it.</div></div>
+  <div class="list"><div class="item"><span class="dot"></span><div><strong>Eligibility:</strong> item must be Available at the selected Stock Location and cannot already have an open reservation or open incident.</div></div><div class="item"><span class="dot"></span><div><strong>Fast Pick:</strong> exact Wellora SN / R2R SN or exact Description.</div></div><div class="item"><span class="dot"></span><div><strong>Browse Eligible Items:</strong> 20 per page. Checkbox selections remain selected while you move between pages.</div></div><div class="item"><span class="dot"></span><div><strong>Cancellation:</strong> cancelling the reservation releases the stock; physical delivery is still handled through Movement.</div></div></div>
+</section>
+
+<section id="disposition" class="section">
+  <div class="section-title"><div><div class="kicker">09 · Disposition</div><h2>Use exact serial identification for terminal actions</h2></div><div class="sub">Disposition is a high-consequence workflow. It deliberately does not offer Description lookup or browse selection.</div></div>
+  <div class="grid two"><div class="card"><h3>Exact SN only</h3><p>Identify the item by exact Wellora SN / R2R SN. The operator must positively identify the specific serialized item.</p></div><div class="card"><h3>Eligibility matters</h3><p>Do not dispose an item while it is At Client, In Transit, in Maintenance/Inspection, Reserved or otherwise operationally blocked.</p></div></div>
+  <div class="note danger"><strong>Disposition is terminal.</strong> Verify the serial number, physical item and disposition information before submitting.</div>
+</section>
+
+<section id="incident" class="section">
+  <div class="section-title"><div><div class="kicker">10 · Incident</div><h2>Report missing/stolen items and recovery</h2></div><div class="sub">Incident is an internal operational control, not a commercial Business relationship.</div></div>
+  <div class="grid two"><div class="card"><h3>Report incident</h3><p>Use exact Wellora SN / R2R SN only. Record the incident type, date/reference and relevant remarks.</p></div><div class="card"><h3>Recover item</h3><p>Use the recovery action when the physical item is found. The system restores the appropriate previous stock state instead of creating a fake movement.</p></div></div>
+  <div class="note warn"><strong>No Description lookup.</strong> Incident actions require exact serialized identification for the same reason as Disposition.</div>
+</section>
+
+<section class="section">
+  <div class="section-title"><div><div class="kicker">Common Status Guide</div><h2>Read the operational state correctly</h2></div><div class="sub">The exact next action depends on the source module and current location, but these are the most common meanings.</div></div>
+  <div class="tablewrap"><table class="table"><thead><tr><th>Status</th><th>Meaning</th><th>Typical next action</th></tr></thead><tbody>
+    <tr><td><span class="tag green">Available</span></td><td>Operational stock available at its current eligible location.</td><td>Movement, Reservation or Service depending on the workflow.</td></tr>
+    <tr><td><span class="tag amber">In Transit</span></td><td>A physical movement or return has started but has not arrived.</td><td>Complete the correct arrival action.</td></tr>
+    <tr><td><span class="tag blue">At Client</span></td><td>The physical item is currently with a client.</td><td>Client operation, Service if eligible, or Return from Client.</td></tr>
+    <tr><td><span class="tag amber">Maintenance</span></td><td>The item is inside an active service cycle.</td><td>End/Restart/Return through Service Cycle.</td></tr>
+    <tr><td><span class="tag purple">Reserved</span></td><td>The item is held for an active reservation.</td><td>Deliver under the valid workflow or cancel the reservation.</td></tr>
+    <tr><td><span class="tag red">Not Available</span></td><td>The item is blocked from normal stock use.</td><td>Resolve the source service/incident/disposition condition.</td></tr>
+  </tbody></table></div>
+</section>
+
+<section class="section">
+  <div class="section-title"><div><div class="kicker">Before You Submit</div><h2>Five checks that prevent most errors</h2></div></div>
+  <div class="grid">
+    <div class="card"><h3>1. Correct serial number?</h3><p>Verify the physical item against the Wellora SN / R2R SN, especially for Incident and Disposition.</p></div>
+    <div class="card"><h3>2. Correct source?</h3><p>The selected source must match where the item is physically located now.</p></div>
+    <div class="card"><h3>3. Correct reference?</h3><p>Use the intended Wellora PO, Client PO, Internal Transfer No., Receiving No., Service No. / PO or other required reference.</p></div>
+    <div class="card"><h3>4. Correct module?</h3><p>Physical change = Movement. Maintenance = Service. Commercial agreement = Documents. Do not use one module to imitate another.</p></div>
+    <div class="card"><h3>5. Arrival completed?</h3><p>If the item is physically received, make sure the corresponding arrival action is complete so Inventory matches reality.</p></div>
+    <div class="card"><h3>Keep the Sheet App responsive</h3><p>Use the built-in paged lists and search controls instead of trying to display all historical records at once.</p></div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">Wellora Energy IMS Sheet App · Operational User Guide · Google Sheets + Apps Script</div></footer>
+</body>
+</html>
