@@ -121,3 +121,18 @@ textarea::placeholder {
   color: #000000 !important;
   filter: brightness(1.08);
 }
+
+/* On desktop/tablet layouts, keep the full left menu reachable on short screens. */
+@media (min-width: 1024px) {
+  body aside {
+    height: 100dvh !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+
+  #navTabs {
+    padding-bottom: 0.25rem;
+  }
+}
