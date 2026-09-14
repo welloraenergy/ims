@@ -14,21 +14,36 @@
     <script defer src="./pwa.js?v=20260914-43"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
+        :root { --wellora-gold:#d3af36; }
         html, body { background:#000000 !important; color:#ffffff !important; }
         [class*="bg-slate-"] { background-color:#000000 !important; }
-        [class*="text-slate-"]:not([class*="text-red-"]):not([class*="text-amber-"]):not([class*="text-emerald-"]):not([class*="text-cyan-"]) { color:#ffffff !important; }
-        input { background:#000000 !important; color:#ffffff !important; }
+        [class*="text-slate-"] { color:#ffffff !important; }
+        label, p, span { color:inherit; }
+        input {
+            background:#000000 !important;
+            color:#ffffff !important;
+            border-color:#4b5563 !important;
+        }
+        input:focus { border-color:var(--wellora-gold) !important; }
         #googleSignIn { background:#111111 !important; color:#ffffff !important; border:1px solid #333333; }
         #googleSignIn:hover { background:#1a1a1a !important; }
-        h2 { color:#ffffff !important; }
+        #loginSubmit { background:var(--wellora-gold) !important; color:#000000 !important; }
+        #loginSubmit:hover { filter:brightness(1.08); }
+        #loginSubtitle { color:var(--wellora-gold) !important; }
+        #loginDividerLabel { color:rgba(255,255,255,.7) !important; }
+        #errorMsg { color:#f87171 !important; }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 flex items-center justify-center min-h-screen p-4">
 
     <div class="bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-700 box-border">
-        <h2 class="text-xl sm:text-2xl font-bold mb-6 text-center text-cyan-400">IMS Portal Login</h2>
+        <div class="flex flex-col items-center text-center mb-6">
+            <img src="./icon-192.png" width="192" height="192" alt="Wellora Energy" class="w-24 h-24 sm:w-28 sm:h-28 object-contain mb-3" draggable="false">
+            <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-white">IMS</h1>
+            <div id="loginSubtitle" class="text-xs sm:text-sm font-bold uppercase tracking-[0.18em] mt-1">Portal Login</div>
+        </div>
 
-        <button id="googleSignIn" type="button" class="w-full bg-white hover:bg-slate-100 text-slate-900 font-semibold py-2.5 px-4 rounded-lg transition duration-200 text-sm flex items-center justify-center gap-3">
+        <button id="googleSignIn" type="button" class="w-full font-semibold py-2.5 px-4 rounded-lg transition duration-200 text-sm flex items-center justify-center gap-3">
             <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
                 <path fill="#4285F4" d="M17.64 9.205c0-.638-.057-1.252-.164-1.841H9v3.482h4.844a4.14 4.14 0 0 1-1.797 2.715v2.258h2.909c1.703-1.568 2.684-3.878 2.684-6.614z"/>
                 <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.181l-2.909-2.258c-.806.54-1.835.859-3.047.859-2.344 0-4.328-1.584-5.037-3.712H.956v2.332A9 9 0 0 0 9 18z"/>
@@ -40,24 +55,24 @@
 
         <div class="flex items-center gap-3 my-5">
             <div class="h-px bg-slate-700 flex-1"></div>
-            <span class="text-xs text-slate-500">OR</span>
+            <span id="loginDividerLabel" class="text-xs">OR</span>
             <div class="h-px bg-slate-700 flex-1"></div>
         </div>
         
         <form id="loginForm" class="space-y-4">
             <div>
-                <label class="block text-sm font-medium mb-1">Email Address</label>
-                <input type="email" id="email" required class="w-full px-3 py-2.5 bg-slate-900 rounded-lg border border-slate-700 focus:outline-none focus:border-cyan-500 text-sm">
+                <label class="block text-sm font-medium mb-1 text-white">Email Address</label>
+                <input type="email" id="email" required class="w-full px-3 py-2.5 rounded-lg border focus:outline-none text-sm">
             </div>
             <div>
-                <label class="block text-sm font-medium mb-1">Password</label>
-                <input type="password" id="password" required class="w-full px-3 py-2.5 bg-slate-900 rounded-lg border border-slate-700 focus:outline-none focus:border-cyan-500 text-sm">
+                <label class="block text-sm font-medium mb-1 text-white">Password</label>
+                <input type="password" id="password" required class="w-full px-3 py-2.5 rounded-lg border focus:outline-none text-sm">
             </div>
-            <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2.5 px-4 rounded-lg transition duration-200 text-sm">
+            <button id="loginSubmit" type="submit" class="w-full font-bold py-2.5 px-4 rounded-lg transition duration-200 text-sm">
                 Sign In
             </button>
         </form>
-        <p id="errorMsg" class="text-red-400 text-xs sm:text-sm mt-4 text-center hidden break-words"></p>
+        <p id="errorMsg" class="text-xs sm:text-sm mt-4 text-center hidden break-words"></p>
     </div>
 
     <script type="module">
