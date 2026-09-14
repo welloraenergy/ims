@@ -7,8 +7,8 @@
 #bizSearch,
 #bizRoleFilter,
 #bizTagFilter {
-  color: #f8fafc !important;
-  background-color: #020617 !important;
+  color: #ffffff !important;
+  background-color: #000000 !important;
   border-color: #475569 !important;
 }
 
@@ -16,44 +16,36 @@
 #bizForm textarea::placeholder,
 #bizSearch::placeholder,
 #bizTagFilter::placeholder {
-  color: #94a3b8 !important;
-  opacity: 1 !important;
+  color: #ffffff !important;
+  opacity: 0.7 !important;
 }
 
 #bizForm label,
 #bizForm .text-slate-400 {
-  color: #cbd5e1 !important;
+  color: #ffffff !important;
 }
 
 #bizList > div {
-  color: #f1f5f9 !important;
+  color: #ffffff !important;
   border-color: #334155 !important;
 }
 
-#bizList .text-slate-500 {
-  color: #94a3b8 !important;
-}
-
+#bizList .text-slate-500,
 #bizList .bg-slate-800 {
-  color: #f8fafc !important;
+  color: #ffffff !important;
 }
 
 /* Business Profile modal */
 #bizProfileModal {
-  color: #f8fafc !important;
+  color: #ffffff !important;
 }
 
-#bizProfileModal > div {
-  background-color: #0f172a !important;
-  border-color: #475569 !important;
-}
-
-#bizProfileModal .bg-slate-900 {
-  background-color: #0f172a !important;
-}
-
-#bizProfileModal .bg-slate-950 {
-  background-color: #020617 !important;
+#bizProfileModal > div,
+#bizProfileModal .bg-slate-900,
+#bizProfileModal .bg-slate-950,
+#bizProfileModal .bg-slate-800 {
+  background-color: #000000 !important;
+  color: #ffffff !important;
 }
 
 #bizProfileModal .border-slate-800,
@@ -62,38 +54,70 @@
 }
 
 #bizProfileModal .text-slate-500,
-#bizProfileModal .text-slate-600 {
-  color: #94a3b8 !important;
-}
-
-#bizProfileModal .text-slate-400 {
-  color: #cbd5e1 !important;
-}
-
-#bizProfileModal .text-cyan-300 {
-  color: #67e8f9 !important;
-}
-
-#bizProfileModal .text-emerald-400 {
-  color: #6ee7b7 !important;
-}
-
-#bizProfileModal .text-amber-400 {
-  color: #fbbf24 !important;
-}
-
+#bizProfileModal .text-slate-600,
+#bizProfileModal .text-slate-400,
 #bizProfileModal h2,
 #bizProfileModal h3,
 #bizProfileModal .font-bold,
 #bizProfileModal .font-semibold {
-  color: #f8fafc;
+  color: #ffffff !important;
 }
 
-#bizProfileModal .bg-slate-800 {
-  background-color: #1e293b !important;
-  color: #f8fafc !important;
-}
+/* Keep semantic/status colors intact inside the profile modal. */
+#bizProfileModal .text-cyan-300 { color: #67e8f9 !important; }
+#bizProfileModal .text-emerald-400 { color: #6ee7b7 !important; }
+#bizProfileModal .text-amber-400 { color: #fbbf24 !important; }
 
 #bizProfileModal button:hover {
   filter: brightness(1.12);
+}
+
+/* ==========================================================
+   IMS GLOBAL THEME
+   Background: #000000
+   Primary text: #ffffff
+   Left navigation buttons: #d3af36
+   Semantic colors (red/amber/green/cyan, etc.) remain unchanged.
+   ========================================================== */
+html,
+body {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Convert neutral slate surfaces to true black. */
+[class*="bg-slate-"] {
+  background-color: #000000 !important;
+}
+
+/* Convert neutral slate typography to white while leaving status/accent colors alone. */
+[class*="text-slate-"]:not([class*="text-red-"]):not([class*="text-amber-"]):not([class*="text-yellow-"]):not([class*="text-emerald-"]):not([class*="text-green-"]):not([class*="text-cyan-"]):not([class*="text-blue-"]) {
+  color: #ffffff !important;
+}
+
+/* Form controls follow the black/white theme. */
+input,
+select,
+textarea {
+  color: #ffffff !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.68) !important;
+  opacity: 1 !important;
+}
+
+/* Left tab menu buttons use Wellora gold. Black text keeps the gold buttons readable. */
+#navTabs .navBtn {
+  background: #d3af36 !important;
+  color: #000000 !important;
+  border-color: #d3af36 !important;
+}
+
+#navTabs .navBtn:hover,
+#navTabs .navBtn:focus-visible {
+  background: #d3af36 !important;
+  color: #000000 !important;
+  filter: brightness(1.08);
 }
