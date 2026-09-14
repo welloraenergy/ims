@@ -108,6 +108,11 @@ textarea::placeholder {
   opacity: 1 !important;
 }
 
+/* Documents lifecycle: Expected Qty is legacy data and is no longer user-facing. */
+#docDetail label:has(#docExpected) {
+  display: none !important;
+}
+
 /* Left tab menu buttons use Wellora gold. Black text keeps the gold buttons readable. */
 #navTabs .navBtn {
   background: #d3af36 !important;
