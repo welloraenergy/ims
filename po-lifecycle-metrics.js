@@ -38,10 +38,11 @@ function metrics(ref){
   const next=ref?.supersededByPOKey?refCache.get(ref.supersededByPOKey):null;
   const nextIds=new Set(uniq(next?.linkedItemIds));
   const extendedIds=linkedIds.filter(id=>nextIds.has(id));
+  const extendedSet=new Set(extendedIds);
   const currentIds=ref?.commercialSide==='client'
-    ? linkedIds.filter(id=>atClient(itemCache.get(id),ref.businessId))
-    : linkedIds.filter(id=>itemCache.get(id));
-  const extended=new Set(extendedIds).size;
+    ? linkedIds.filter(id=>!extendedSet.has(id)&&atClient(itemCache.get(id),ref.businessId))
+    : linkedIds.filter(id=>!extendedSet.has(id)&&itemCache.get(id));
+  const extended=extendedSet.size;
   const current=new Set(currentIds).size;
   const linked=linkedIds.length;
   const returned=Math.max(0,linked-extended-current);
@@ -63,7 +64,6 @@ async function enhanceTable(){
     heads[5].textContent='Linked';
     heads[6].textContent='Extended';
     heads[7].textContent='Returned';
-    // Insert Current before PO Total once, reusing the old layout by adding one cell.
     if(!table.querySelector('thead th[data-po-current]')){
       const th=document.createElement('th');th.dataset.poCurrent='1';th.className='p-2 text-right';th.textContent='Current';
       heads[8].before(th);
@@ -101,7 +101,7 @@ async function enhanceDetail(){
   const fallbackLinked=detail.querySelectorAll('.openDocItem[data-id]').length;
   const m=ref?metrics(ref):{linked:fallbackLinked,extended:0,returned:0,current:fallbackLinked};
 
-  // Keep the legacy input in the DOM for the existing save handler, but remove it from the UI.
+  // Retain a hidden legacy value so the existing save handler remains compatible.
   const expected=document.getElementById('docExpected');
   if(expected){expected.value=String(m.linked);expected.closest('label')?.classList.add('hidden');}
 
