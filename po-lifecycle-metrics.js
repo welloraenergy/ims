@@ -53,6 +53,38 @@ function metrics(ref){
   return{linked,extended,returned,current};
 }
 
+function precleanTable(){
+  const table=document.querySelector('#docTable table');if(!table)return;
+  const heads=[...table.querySelectorAll('thead th')];
+  if(heads.length<9)return;
+  heads[5].textContent='Linked';
+  heads[6].textContent='Extended';
+  heads[7].textContent='Returned';
+  let currentHead=table.querySelector('thead th[data-po-current]');
+  if(!currentHead){
+    currentHead=document.createElement('th');
+    currentHead.dataset.poCurrent='1';
+    currentHead.className='p-2 text-right';
+    currentHead.textContent='Current';
+    heads[8].before(currentHead);
+  }
+  for(const row of table.querySelectorAll('tbody tr')){
+    if(!row.querySelector('.openPO[data-key]'))continue;
+    const cells=[...row.children];if(cells.length<12)continue;
+    cells[5].textContent='…';
+    cells[6].textContent='…';
+    cells[7].textContent='…';
+    let currentCell=row.querySelector('td[data-po-current]');
+    if(!currentCell){
+      currentCell=document.createElement('td');
+      currentCell.dataset.poCurrent='1';
+      currentCell.className='p-2 text-right';
+      cells[8].before(currentCell);
+    }
+    currentCell.textContent='…';
+  }
+}
+
 function precleanDetail(){
   const detail=document.getElementById('docDetail');
   if(!detail?.querySelector('section'))return;
@@ -70,6 +102,7 @@ function precleanDetail(){
 }
 
 async function enhanceTable(){
+  precleanTable();
   const table=document.querySelector('#docTable table');if(!table)return;
   const rows=[...table.querySelectorAll('tbody tr')].filter(r=>r.querySelector('.openPO[data-key]'));
   const keys=rows.map(r=>r.querySelector('.openPO')?.dataset.key).filter(Boolean);
@@ -79,27 +112,17 @@ async function enhanceTable(){
   const ids=[];for(const k of keys)ids.push(...uniq(refCache.get(k)?.linkedItemIds));
   await loadItems(ids);
 
-  const heads=table.querySelectorAll('thead th');
-  if(heads.length>=9){
-    heads[5].textContent='Linked';
-    heads[6].textContent='Extended';
-    heads[7].textContent='Returned';
-    if(!table.querySelector('thead th[data-po-current]')){
-      const th=document.createElement('th');th.dataset.poCurrent='1';th.className='p-2 text-right';th.textContent='Current';
-      heads[8].before(th);
-    }
-  }
-
   for(const row of rows){
     const key=row.querySelector('.openPO')?.dataset.key,ref=refCache.get(key);if(!ref)continue;
-    const m=metrics(ref),cells=[...row.children];if(cells.length<12)continue;
+    const m=metrics(ref),cells=[...row.children];if(cells.length<13)continue;
     cells[5].textContent=String(m.linked);
     cells[6].textContent=String(m.extended);
     cells[7].textContent=String(m.returned);
-    let currentCell=row.querySelector('td[data-po-current]');
-    if(!currentCell){currentCell=document.createElement('td');currentCell.dataset.poCurrent='1';currentCell.className='p-2 text-right';cells[8].before(currentCell);}
-    currentCell.textContent=String(m.current);
-    currentCell.title='Items still active under this PO, including items awaiting return';
+    const currentCell=row.querySelector('td[data-po-current]');
+    if(currentCell){
+      currentCell.textContent=String(m.current);
+      currentCell.title='Items still active under this PO, including items awaiting return';
+    }
   }
 }
 
@@ -143,17 +166,18 @@ async function enhanceDetail(){
 
 async function enhance(){
   if(running)return;running=true;
-  try{precleanDetail();await enhanceTable();await enhanceDetail();}
+  try{precleanTable();precleanDetail();await enhanceTable();await enhanceDetail();}
   catch(err){console.warn('IMS PO lifecycle metrics failed:',err);}
   finally{running=false;}
 }
 function schedule(){clearTimeout(timer);timer=setTimeout(enhance,60);}
 
 document.addEventListener('click',e=>{
-  const b=e.target.closest?.('.openPO[data-key],.openCyclePO[data-key]');if(b?.dataset.key){lastKey=b.dataset.key;setTimeout(precleanDetail,0);schedule();}
+  const b=e.target.closest?.('.openPO[data-key],.openCyclePO[data-key]');if(b?.dataset.key){lastKey=b.dataset.key;setTimeout(()=>{precleanTable();precleanDetail();},0);schedule();}
 },true);
-new MutationObserver(()=>{precleanDetail();schedule();}).observe(document.documentElement,{childList:true,subtree:true});
+new MutationObserver(()=>{precleanTable();precleanDetail();schedule();}).observe(document.documentElement,{childList:true,subtree:true});
 window.addEventListener('ims:auth-ready',schedule);
 window.addEventListener('ims:invoices-ready',schedule);
+precleanTable();
 precleanDetail();
 schedule();
