@@ -130,6 +130,25 @@ textarea::placeholder {
     overflow-y: auto !important;
     overscroll-behavior: contain;
     scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(211, 175, 54, 0.42) transparent;
+  }
+
+  body aside::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  body aside::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  body aside::-webkit-scrollbar-thumb {
+    background: rgba(211, 175, 54, 0.38);
+    border-radius: 999px;
+  }
+
+  body aside::-webkit-scrollbar-thumb:hover {
+    background: rgba(211, 175, 54, 0.58);
   }
 
   #navTabs {
