@@ -27,7 +27,7 @@ function movementAdapter(){
       return!!rule&&balances(i).some(b=>sameLoc(b,c.sourceId,c.sourceName)&&b.locationType===rule[0]&&b.status===rule[1]);
     },
     selected:()=>new Set([...document.querySelectorAll('.bmLine')].map(r=>r.dataset.itemId).filter(Boolean)),
-    async add(i){const field=$('bmLookupField'),input=$('bmLookupValue'),btn=$('bmFindItem');if(!field||!input||!btn)return false;const before=document.querySelectorAll('.bmLine').length;field.value=i.alias?'alias':'name';input.value=i.alias||i.name||'';btn.__imsExactAdd=true;try{if(typeof btn.onclick==='function')await btn.onclick(new Event('click'));}finally{btn.__imsExactAdd=false;}return waitFor(()=>document.querySelectorAll('.bmLine').length>before,1800);}
+    async add(i){const field=$('bmLookupField'),input=$('bmLookupValue'),btn=$('bmFindItem');if(!field||!input||!btn)return false;const before=document.querySelectorAll('.bmLine').length;field.value=i.alias?'alias':'name';input.value=i.alias||i.name||'';const exact=btn.__imsExactHandler;if(typeof exact!=='function')return false;btn.__imsExactAdd=true;try{await exact.call(btn,new Event('click'));}finally{btn.__imsExactAdd=false;}return waitFor(()=>document.querySelectorAll('.bmLine').length>before,1800);}
   };
 }
 
@@ -39,7 +39,7 @@ function serviceAdapter(){
     ready:c=>!!c.sourceId,
     eligible(i,c){return balances(i).some(b=>{if(!sameLoc(b,c.sourceId,c.sourceName))return false;if(c.type==='warehouse')return b.locationType==='warehouse'&&['Available','Not Available'].includes(b.status);if(c.type==='client')return b.locationType==='client'&&['At Client','Not Available'].includes(b.status);if(c.type==='supplier')return b.locationType==='supplier'&&['At Supplier','Not Available'].includes(b.status);return false;});},
     selected:()=>new Set([...document.querySelectorAll('.scLine')].map(r=>r.dataset.id).filter(Boolean)),
-    async add(i){const field=$('scLookupField'),input=$('scLookupValue'),btn=$('scFind');if(!field||!input||!btn)return false;const before=document.querySelectorAll('.scLine').length;field.value=i.alias?'alias':'name';input.value=i.alias||i.name||'';btn.__imsExactAdd=true;try{if(typeof btn.onclick==='function')await btn.onclick(new Event('click'));}finally{btn.__imsExactAdd=false;}return waitFor(()=>document.querySelectorAll('.scLine').length>before,1800);}
+    async add(i){const field=$('scLookupField'),input=$('scLookupValue'),btn=$('scFind');if(!field||!input||!btn)return false;const before=document.querySelectorAll('.scLine').length;field.value=i.alias?'alias':'name';input.value=i.alias||i.name||'';const exact=btn.__imsExactHandler;if(typeof exact!=='function')return false;btn.__imsExactAdd=true;try{await exact.call(btn,new Event('click'));}finally{btn.__imsExactAdd=false;}return waitFor(()=>document.querySelectorAll('.scLine').length>before,1800);}
   };
 }
 
@@ -119,6 +119,9 @@ async function categoryOptions(a){const s=stateFor(a),values=await categories();
 function upgradeNativeSearch(a,panel){
   if(!a.lookupInput||!a.lookupButton||a.lookupButton.dataset.imsLooseSearch==='1')return;
   a.lookupButton.dataset.imsLooseSearch='1';
+  a.lookupButton.__imsExactHandler=typeof a.lookupButton.onclick==='function'?a.lookupButton.onclick:null;
+  a.lookupButton.onclick=null;
+  a.lookupInput.onkeydown=null;
   a.lookupButton.textContent='Search Items';
   a.lookupInput.placeholder='SN prefix or description';
   const label=a.lookupInput.closest('label');if(label&&label.firstChild)label.firstChild.textContent='Search ';
@@ -128,7 +131,7 @@ function upgradeNativeSearch(a,panel){
     const wrap=document.createElement('label');wrap.className='block min-w-0 text-xs text-slate-400';wrap.textContent='Category';const sel=document.createElement('select');sel.dataset.pickerCategory='';sel.className='w-full min-w-0 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-sm mt-1';wrap.appendChild(sel);grid.insertBefore(wrap,a.lookupButton);categoryOptions(a).then(html=>{sel.innerHTML=html;sel.value=stateFor(a).category||'';});sel.onchange=()=>{const s=stateFor(a);s.category=sel.value||'';fetchPage(a,true);};
   }
   const section=a.lookupButton.closest('section'),hint=section?.querySelector('.text-[11px].text-slate-500');if(hint)hint.textContent='Search eligible items by SN prefix or description, and optionally filter by category. Example: ABD-123- shows matching opening serial numbers.';
-  a.lookupInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();a.lookupButton.click();}});
+  a.lookupInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();e.stopImmediatePropagation();a.lookupButton.click();}},true);
   a.lookupButton.addEventListener('click',e=>{if(a.lookupButton.__imsExactAdd)return;e.preventDefault();e.stopImmediatePropagation();const s=stateFor(a);s.search=a.lookupInput.value||'';fetchPage(a,true);},true);
 }
 function ensurePanel(a){
