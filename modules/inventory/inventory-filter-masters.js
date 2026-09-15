@@ -1,7 +1,7 @@
 import {db} from '../../firebase-config.js';
 import {collection,getDocs} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
 
-let categories=[],locations=[],loading=null;
+let categories=[],sizes=[],locations=[],loading=null;
 const active=x=>x?.status!=='inactive';
 const partyName=x=>x?.companyName||x?.clientName||x?.supplierName||'';
 const uniq=values=>[...new Set(values.map(v=>String(v||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'}));
@@ -18,12 +18,13 @@ async function loadMasters(){
     const clients=clientsSnap.docs.map(d=>({id:d.id,...d.data()})).filter(active);
     const suppliers=suppliersSnap.docs.map(d=>({id:d.id,...d.data()})).filter(active);
     categories=uniq(settings.filter(x=>x.type==='category').map(x=>x.value));
+    sizes=uniq(settings.filter(x=>x.type==='size').map(x=>x.value));
     locations=uniq([
       ...settings.filter(x=>x.type==='warehouse').map(x=>x.value),
       ...clients.map(partyName),
       ...suppliers.map(partyName)
     ]);
-    return{categories,locations};
+    return{categories,sizes,locations};
   })().catch(error=>{loading=null;throw error;});
   return loading;
 }
@@ -36,13 +37,17 @@ function refill(select,values,label){
 }
 
 async function hydrate(){
-  const category=document.getElementById('stockCategoryFilter'),location=document.getElementById('stockLocationFilter');
-  if(!category&&!location)return;
+  const category=document.getElementById('stockCategoryFilter'),size=document.getElementById('stockSizeFilter'),location=document.getElementById('stockLocationFilter');
+  if(!category&&!size&&!location)return;
   try{
     await loadMasters();
     if(category&&category.dataset.imsMasterHydrated!=='1'){
       refill(category,categories,'Categories');
       category.dataset.imsMasterHydrated='1';
+    }
+    if(size&&size.dataset.imsMasterHydrated!=='1'){
+      refill(size,sizes,'Sizes');
+      size.dataset.imsMasterHydrated='1';
     }
     if(location&&location.dataset.imsMasterHydrated!=='1'){
       refill(location,locations,'Locations');
