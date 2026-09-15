@@ -3,7 +3,7 @@ import {addDoc,collection,doc,getDocs,limit,query,runTransaction,where} from 'ht
 import {can} from '../../ims-permissions.js';
 import {applyInventorySummaryDelta,inventorySummaryDelta} from '../inventory/inventory-summary.js';
 
-const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c])),now=()=>new Date().toISOString(),cls='w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-sm';
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),now=()=>new Date().toISOString(),cls='w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-sm';
 let settingsCache=null;
 const FIELD_MAP=[
   ['type','itemTypeId','item_type','Type'],['category','categoryId','category','Category'],['size','sizeId','size','Size'],['grade','gradeId','grade','Grade'],['ppf','ppfId','ppf','PPF'],['connection','connectionId','connection','Connection'],['range','rangeId','range','Range'],['brand','brandId','brand','Brand'],['model','modelId','model','Model'],['weightUnit','weightUnitId','weight_unit','Weight Unit'],['unit','unitId','unit','Unit']
