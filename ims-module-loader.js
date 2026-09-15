@@ -1,6 +1,6 @@
-import { can, currentRole } from './ims-permissions.js?v=20260911-38';
+import { can, currentRole } from './ims-permissions.js?v=20260915-51';
 
-const IMS_BUILD='20260911-38';
+const IMS_BUILD='20260915-51';
 const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${IMS_BUILD}`;
 
 const MODULES=Object.freeze([
@@ -16,6 +16,7 @@ const MODULES=Object.freeze([
 {id:'backup',src:'./modules/backup/backup-module.js',permission:'backup.create',owner:'IMSBackup'},
 {id:'items',src:'./modules/items/item-module.js',permission:'inventory.view',owner:'IMSItems'},
 {id:'inventory',src:'./modules/inventory/inventory-module.js',permission:'inventory.view',owner:'IMSInventory'},
+{id:'inventory-filter-masters',src:'./modules/inventory/inventory-filter-masters.js',permission:'inventory.view',owner:'IMSInventoryFilterMasters'},
 {id:'workspace',src:'./modules/workspace/workspace-module.js',permission:'app.view',owner:'IMSWorkspace'},
 {id:'registration',src:'./modules/registration/registration-module.js',permission:'inventory.add',owner:'IMSRegistration'},
 {id:'registration-import-export',src:'./modules/registration/registration-import-export.js',roles:['manager','superadmin'],owner:'IMSRegistrationCSV'},
