@@ -15,9 +15,16 @@ function movementAdapter(){
   if(!$('batchMoveForm')||!$('bmLookupField')||!$('bmFindItem'))return null;
   return{
     id:'movement',anchor:$('bmLines'),
-    context(){const action=$('bmAction')?.value||'',src=$('bmSource'),o=selectedOption(src);return{action,sourceId:src?.value||'',sourceName:o?.dataset?.name||o?.textContent?.trim()||''};},
+    context(){const action=$('bmAction')?.value||'',src=$('bmSource'),o=selectedOption(src);return{action,sourceId:src?.value||'',sourceName:o?.dataset?.name||o?.textContent?.trim()||'',reservationId:$('bmReservation')?.value||''};},
     ready:c=>!!c.sourceId,
-    eligible(i,c){const map={RECEIVE_SUPPLIER:['supplier','At Supplier'],TRANSFER_WAREHOUSE:['warehouse','Available'],DELIVER_CLIENT:['warehouse','Available'],RETURN_CLIENT:['client','At Client']},rule=map[c.action];return!!rule&&balances(i).some(b=>sameLoc(b,c.sourceId,c.sourceName)&&b.locationType===rule[0]&&b.status===rule[1]);},
+    eligible(i,c){
+      if(c.action==='DELIVER_CLIENT'){
+        if(i.activeReservation)return false;
+        return balances(i).some(b=>sameLoc(b,c.sourceId,c.sourceName)&&b.locationType==='warehouse'&&b.status==='Available');
+      }
+      const map={RECEIVE_SUPPLIER:['supplier','At Supplier'],TRANSFER_WAREHOUSE:['warehouse','Available'],RETURN_CLIENT:['client','At Client']},rule=map[c.action];
+      return!!rule&&balances(i).some(b=>sameLoc(b,c.sourceId,c.sourceName)&&b.locationType===rule[0]&&b.status===rule[1]);
+    },
     selected:()=>new Set([...document.querySelectorAll('.bmLine')].map(r=>r.dataset.itemId).filter(Boolean)),
     async add(i){const field=$('bmLookupField'),input=$('bmLookupValue'),btn=$('bmFindItem');if(!field||!input||!btn)return false;const before=document.querySelectorAll('.bmLine').length;field.value=i.alias?'alias':'name';input.value=i.alias||i.name||'';btn.click();return waitFor(()=>document.querySelectorAll('.bmLine').length>before,1800);}
   };
@@ -65,7 +72,7 @@ function incidentAdapter(){
   return{
     id:'incident',anchor:$('incSelected'),single:true,
     context:()=>({screen:'incident'}),ready:()=>true,
-    eligible:i=>!i.activeIncident&&!['Missing','Stolen'].includes(i.status)&&!exit.has(i.status)&&balances(i).length>0,
+    eligible:i=>!i.activeIncident&&!i.activeReservation&&!['Missing','Stolen'].includes(i.status)&&!exit.has(i.status)&&balances(i).length>0&&!balances(i).some(b=>b.status==='Reserved'),
     selected:()=>new Set(),
     async add(i){const field=$('incLookupField'),input=$('incLookupValue'),btn=$('incFind');if(!field||!input||!btn)return false;field.value=i.alias?'alias':'name';input.value=i.alias||i.name||'';btn.click();return waitFor(()=>($('incSelected')?.textContent||'').includes(i.alias||i.itemCode||i.name||'__'),1800);}
   };
@@ -101,15 +108,17 @@ function ensurePanel(a){
   panel.innerHTML=`<div class="flex flex-wrap items-center justify-between gap-2"><div><div class="font-semibold text-sm text-cyan-300">Browse Eligible Items</div><div class="text-[11px] text-slate-500">20 eligible items per page. Fast Pick by Wellora SN / R2R SN or Description remains available above.</div></div><button type="button" data-picker-refresh class="bg-slate-700 hover:bg-slate-600 px-3 py-2 rounded-lg text-xs">Refresh</button></div><div data-picker-body class="text-xs text-slate-500">Loading…</div>`;
   a.anchor.parentElement?.insertBefore(panel,a.anchor);
   panel.querySelector('[data-picker-refresh]').onclick=()=>fetchPage(a,true);
-  const watchIds=a.id==='movement'?['bmAction','bmSource']:a.id==='service'?['scSrcType','scSrc']:a.id==='reservation'?['resLocation']:[];
-  watchIds.forEach(id=>document.getElementById(id)?.addEventListener('change',()=>setTimeout(()=>fetchPage(a,true),0)));
+  const watchIds=a.id==='movement'?['bmAction','bmSource','bmReservation']:a.id==='service'?['scSrcType','scSrc']:a.id==='reservation'?['resLocation']:[];
+  watchIds.forEach(id=>document.getElementById(id)?.addEventListener('change',()=>setTimeout(()=>fetchPage(a,true),120)));
+  if(a.id==='movement'&&a.anchor){new MutationObserver(()=>{clearTimeout(a.__pickerRefreshTimer);a.__pickerRefreshTimer=setTimeout(()=>fetchPage(a,true),80);}).observe(a.anchor,{childList:true,subtree:false});}
   fetchPage(a,true);
 }
 
 function render(a,message=''){
   const panel=document.getElementById(panelId(a));if(!panel)return;const body=panel.querySelector('[data-picker-body]'),s=stateFor(a),selected=a.selected(),inputType=a.single?'radio':'checkbox',inputName=a.single?`imsPickerRadio-${a.id}`:'';
-  if(message&&!s.items.length){body.innerHTML=`<div class="py-2 text-slate-500">${esc(message)}</div>`;return;}
-  const rows=s.items.map(i=>`<label class="grid grid-cols-[auto_minmax(0,1fr)] sm:grid-cols-[auto_180px_minmax(0,1fr)_90px] gap-3 items-center border border-slate-800 rounded-lg px-3 py-2 cursor-pointer"><input type="${inputType}" ${inputName?`name="${inputName}"`:''} class="imsPickerCheck" value="${esc(i.id)}" ${selected.has(i.id)?'disabled':''}><div class="sm:hidden min-w-0"><div class="font-semibold text-cyan-300">${esc(i.alias||'—')}</div><div class="text-xs text-slate-300 break-words">${esc(i.name||'')}</div><div class="text-[10px] text-slate-500">${esc(i.currentLocation||'')}</div></div><div class="hidden sm:block font-semibold text-cyan-300">${esc(i.alias||'—')}</div><div class="hidden sm:block text-xs text-slate-300 break-words">${esc(i.name||'')}</div><div class="hidden sm:block text-[10px] text-slate-500 text-right">${esc(i.unit||'')}</div></label>`).join('');
+  const visible=s.items.filter(i=>!selected.has(i.id));
+  if(message&&!visible.length){body.innerHTML=`<div class="py-2 text-slate-500">${esc(message)}</div>`;return;}
+  const rows=visible.map(i=>`<label class="grid grid-cols-[auto_minmax(0,1fr)] sm:grid-cols-[auto_180px_minmax(0,1fr)_90px] gap-3 items-center border border-slate-800 rounded-lg px-3 py-2 cursor-pointer"><input type="${inputType}" ${inputName?`name="${inputName}"`:''} class="imsPickerCheck" value="${esc(i.id)}"><div class="sm:hidden min-w-0"><div class="font-semibold text-cyan-300">${esc(i.alias||'—')}</div><div class="text-xs text-slate-300 break-words">${esc(i.name||'')}</div><div class="text-[10px] text-slate-500">${esc(i.currentLocation||'')}</div></div><div class="hidden sm:block font-semibold text-cyan-300">${esc(i.alias||'—')}</div><div class="hidden sm:block text-xs text-slate-300 break-words">${esc(i.name||'')}</div><div class="hidden sm:block text-[10px] text-slate-500 text-right">${esc(i.unit||'')}</div></label>`).join('');
   body.innerHTML=`<div class="space-y-2">${rows||`<div class="py-2 text-slate-500">${esc(message||'No eligible items found.')}</div>`}</div><div class="flex flex-wrap items-center justify-between gap-2 pt-2"><div class="text-[11px] text-slate-500">Showing up to ${PAGE_SIZE} eligible item(s)</div><div class="flex flex-wrap gap-2"><button type="button" data-picker-prev ${s.history.length?'':'disabled'} class="px-3 py-2 rounded-lg text-xs ${s.history.length?'bg-slate-700':'bg-slate-900 text-slate-600'}">Previous</button><button type="button" data-picker-next ${s.next?'':'disabled'} class="px-3 py-2 rounded-lg text-xs ${s.next?'bg-slate-700':'bg-slate-900 text-slate-600'}">Next</button><button type="button" data-picker-add class="bg-cyan-700 hover:bg-cyan-600 px-3 py-2 rounded-lg text-xs font-bold">${a.single?'Select Item':'Add Selected'}</button></div></div>`;
   body.querySelector('[data-picker-prev]').onclick=()=>{if(!s.history.length)return;s.start=s.history.pop();fetchPage(a);};
   body.querySelector('[data-picker-next]').onclick=()=>{if(!s.next)return;s.history.push(s.start);s.start=s.next;fetchPage(a);};
@@ -119,4 +128,4 @@ function render(a,message=''){
 function scan(){[movementAdapter(),serviceAdapter(),reservationAdapter(),dispositionAdapter(),incidentAdapter()].filter(Boolean).forEach(ensurePanel);}
 let timer;new MutationObserver(()=>{clearTimeout(timer);timer=setTimeout(scan,50);}).observe(document.documentElement,{childList:true,subtree:true});
 scan();
-window.IMSItemPicker=Object.freeze({refresh:()=>{states.clear();scan();}});
+window.IMSItemPicker=Object.freeze({refresh:()=>{states.clear();document.querySelectorAll('[id^="imsPicker-"]').forEach(x=>x.remove());scan();}});
