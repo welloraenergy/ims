@@ -1,6 +1,6 @@
-import { can, currentRole } from './ims-permissions.js?v=20260915-59';
+import { can, currentRole } from './ims-permissions.js?v=20260916-60';
 
-const IMS_BUILD='20260915-59';
+const IMS_BUILD='20260916-60';
 const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${IMS_BUILD}`;
 
 const MODULES=Object.freeze([
@@ -12,6 +12,7 @@ const MODULES=Object.freeze([
 {id:'business-csv',src:'./modules/businesses/business-import-export.js',roles:['manager','superadmin'],owner:'IMSBusinessCSV'},
 {id:'users',src:'./modules/users/users-module.js',permission:'users.view',owner:'IMSUsers'},
 {id:'audit',src:'./modules/audit/audit-module.js',permission:'audit.view',owner:'IMSAudit'},
+{id:'reversal',src:'./modules/reversal/reversal-module.js',roles:['superadmin'],owner:'IMSReversal'},
 {id:'records',src:'./modules/records/records-module.js',permission:'records.view',owner:'IMSRecords'},
 {id:'backup',src:'./modules/backup/backup-module.js',permission:'backup.create',owner:'IMSBackup'},
 {id:'items',src:'./modules/items/item-module.js',permission:'inventory.view',owner:'IMSItems'},
