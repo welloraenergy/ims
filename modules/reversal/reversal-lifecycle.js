@@ -1,5 +1,5 @@
 import {auth,db} from '../../firebase-config.js';
-import {collection,doc,getDocs,query,runTransaction,where} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
+import {collection,doc,getDoc,getDocs,query,runTransaction,where} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
 import {applyInventorySummaryDelta,inventorySummaryDelta} from '../inventory/inventory-summary.js';
 
 const $=id=>document.getElementById(id);
@@ -60,9 +60,9 @@ async function requestDeactivate(){
 
 async function deactivateItem(id,remark){
   const at=now(),by=email(),itemRef=doc(db,'inventory',id),auditRef=doc(collection(db,'audit_traces')),logRef=doc(collection(db,'operational_logs'));
-  const snap=await getDocs(query(collection(db,'inventory'),where('__name__','==',id)));
-  if(!snap.size)throw new Error('Item no longer exists.');
-  const item={id:snap.docs[0].id,...snap.docs[0].data()},state=await eligibility(item);
+  const snap=await getDoc(itemRef);
+  if(!snap.exists())throw new Error('Item no longer exists.');
+  const item={id:snap.id,...snap.data()},state=await eligibility(item);
   if(!state.eligible)throw new Error(state.reasons.join(' '));
   await runTransaction(db,async tx=>{
     const currentSnap=await tx.get(itemRef);if(!currentSnap.exists())throw new Error('Item no longer exists.');
