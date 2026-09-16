@@ -6,7 +6,7 @@ export const SUMMARY_GLOBAL=doc(db,'inventory_summary','global');
 export const SUMMARY_DISTRIBUTION=doc(db,'inventory_summary','distribution');
 export const SUMMARY_CATEGORIES=doc(db,'inventory_summary','categories');
 
-const EXIT_STATUS=new Set(['Disposed - Sold','Disposed - Scrapped','Written Off','Returned to Supplier','Returned to Owner','Disposed - Other']);
+const EXIT_STATUS=new Set(['Inactive','Disposed - Sold','Disposed - Scrapped','Written Off','Returned to Supplier','Returned to Owner','Disposed - Other']);
 const GLOBAL_FIELDS=['liveQty','availableQty','atClientQty','atSupplierQty','reservedQty','maintenanceQty','inspectionQty','notAvailableQty','inTransitQty','missingQty','stolenQty','ownedQty','r2rQty'];
 const numeric=v=>Number(v||0);
 const safe=s=>String(s??'').replace(/[./#$\[\]]/g,'_').trim()||'Unknown';
