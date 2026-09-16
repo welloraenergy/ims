@@ -76,7 +76,7 @@ async function deactivateItem(id,remark){
 }
 
 function installPanel(){
-  if(!isSuperadmin()||!$('deleteLookupValue')||$('[data-ims-deactivate-panel="1"]'))return;
+  if(!isSuperadmin()||!$('deleteLookupValue')||document.querySelector('[data-ims-deactivate-panel="1"]'))return;
   const host=$('appContent')?.querySelector('.space-y-5');if(!host)return;
   const section=document.createElement('section');
   section.dataset.imsDeactivatePanel='1';
