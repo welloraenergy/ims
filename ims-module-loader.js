@@ -1,6 +1,6 @@
-import { can, currentRole } from './ims-permissions.js?v=20260916-60';
+import { can, currentRole } from './ims-permissions.js?v=20260916-61';
 
-const IMS_BUILD='20260916-60';
+const IMS_BUILD='20260916-61';
 const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${IMS_BUILD}`;
 
 const MODULES=Object.freeze([
@@ -13,11 +13,14 @@ const MODULES=Object.freeze([
 {id:'users',src:'./modules/users/users-module.js',permission:'users.view',owner:'IMSUsers'},
 {id:'audit',src:'./modules/audit/audit-module.js',permission:'audit.view',owner:'IMSAudit'},
 {id:'reversal',src:'./modules/reversal/reversal-module.js',roles:['superadmin'],owner:'IMSReversal'},
+{id:'reversal-lifecycle',src:'./modules/reversal/reversal-lifecycle.js',roles:['superadmin'],owner:'IMSReversalLifecycle'},
+{id:'reversal-wiring',src:'./modules/reversal/reversal-wiring.js',roles:['superadmin'],owner:'IMSReversalWiring'},
 {id:'records',src:'./modules/records/records-module.js',permission:'records.view',owner:'IMSRecords'},
 {id:'backup',src:'./modules/backup/backup-module.js',permission:'backup.create',owner:'IMSBackup'},
 {id:'items',src:'./modules/items/item-module.js',permission:'inventory.view',owner:'IMSItems'},
 {id:'inventory',src:'./modules/inventory/inventory-module.js',permission:'inventory.view',owner:'IMSInventory'},
 {id:'inventory-filter-masters',src:'./modules/inventory/inventory-filter-masters.js',permission:'inventory.view',owner:'IMSInventoryFilterMasters'},
+{id:'inventory-deactivated',src:'./modules/inventory/inventory-deactivated.js',permission:'inventory.view',owner:'IMSInventoryDeactivated'},
 {id:'workspace',src:'./modules/workspace/workspace-module.js',permission:'app.view',owner:'IMSWorkspace'},
 {id:'registration',src:'./modules/registration/registration-module.js',permission:'inventory.add',owner:'IMSRegistration'},
 {id:'registration-import-export',src:'./modules/registration/registration-import-export.js',roles:['manager','superadmin'],owner:'IMSRegistrationCSV'},
