@@ -76,8 +76,10 @@
    IMS GLOBAL THEME
    Background: #000000
    Primary text: #ffffff
-   Left navigation buttons: #d3af36
-   Semantic colors (red/amber/green/cyan, etc.) remain unchanged.
+   Navigation / neutral primary: Wellora gold #d3af36
+   Danger / due / caution: red
+   Save / pass / confirm / complete: green
+   Secondary controls: black/slate with border
    ========================================================== */
 html,
 body {
@@ -113,18 +115,71 @@ textarea::placeholder {
   display: none !important;
 }
 
-/* Left tab menu buttons use Wellora gold. Black text keeps the gold buttons readable. */
+/* Left navigation: gold by default, visibly darker/outlined when active. */
 #navTabs .navBtn {
   background: #d3af36 !important;
   color: #000000 !important;
-  border-color: #d3af36 !important;
+  border: 1px solid #d3af36 !important;
+  box-shadow: none !important;
 }
 
 #navTabs .navBtn:hover,
 #navTabs .navBtn:focus-visible {
-  background: #d3af36 !important;
+  background: #e0c15a !important;
   color: #000000 !important;
-  filter: brightness(1.08);
+  border-color: #f2da86 !important;
+  filter: none !important;
+}
+
+/* Existing modules mark the active nav button with a red utility class. Re-map that state to active gold. */
+#navTabs .navBtn[class*="bg-red-"] {
+  background: #7a5b0c !important;
+  color: #ffffff !important;
+  border-color: #f2d675 !important;
+  box-shadow: inset 3px 0 0 #fff2b2, 0 0 0 1px rgba(242,214,117,.24) !important;
+}
+
+/* Reversal remains available from Main Workspace; it is not a top-level navigation destination. */
+#navTabs .navBtn[data-tab="reversal"] {
+  display: none !important;
+}
+
+/* Global action palette: cyan/blue/amber action buttons become neutral Wellora gold. */
+button[class*="bg-cyan-"],
+button[class*="bg-blue-"],
+button[class*="bg-amber-"] {
+  background-color: #d3af36 !important;
+  color: #000000 !important;
+  border-color: #d3af36 !important;
+}
+
+button[class*="bg-cyan-"]:hover,
+button[class*="bg-blue-"]:hover,
+button[class*="bg-amber-"]:hover {
+  background-color: #e0c15a !important;
+  color: #000000 !important;
+}
+
+/* Success / save / confirm / pass remains green. */
+button[class*="bg-emerald-"],
+button[class*="bg-green-"] {
+  color: #ffffff !important;
+}
+
+/* Danger / due / destructive actions remain red. */
+button[class*="bg-red-"] {
+  color: #ffffff !important;
+}
+
+/* Secondary slate buttons stay neutral black with a visible border. */
+button[class*="bg-slate-"]:not(.navBtn) {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border: 1px solid #475569 !important;
+}
+
+button[class*="bg-slate-"]:not(.navBtn):hover {
+  border-color: #94a3b8 !important;
 }
 
 /* On desktop/tablet layouts, keep the full left menu reachable on short screens. */
