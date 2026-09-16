@@ -1,6 +1,6 @@
-import { can, currentRole } from './ims-permissions.js?v=20260916-69';
+import { can, currentRole } from './ims-permissions.js?v=20260916-70';
 
-const IMS_BUILD='20260916-69';
+const IMS_BUILD='20260916-70';
 const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${IMS_BUILD}`;
 
 const MODULES=Object.freeze([
@@ -38,6 +38,7 @@ const MODULES=Object.freeze([
 {id:'disposition',src:'./modules/disposition/disposition-module.js',permission:'disposition.view',owner:'IMSDisposition'},
 {id:'incident',src:'./modules/incident/incident-module.js',permission:'incident.view',owner:'IMSIncident'},
 {id:'alpha-usability',src:'./ims-alpha-usability.js',owner:'IMSAlphaUsability'},
+{id:'available-picker-pagination',src:'./modules/shared/paginated-available-pickers.js',owner:'IMSAvailablePickerPagination'},
 {id:'commercial-context',src:'./ims-commercial-context.js',owner:'IMSCommercialContext'},
 {id:'client-due-warning',src:'./ims-client-due-warning.js',owner:'IMSDueWarning'},
 {id:'client-doc-enrichment',src:'./ims-client-doc-enrichment.js',owner:'IMSClientDocEnrichment'},
