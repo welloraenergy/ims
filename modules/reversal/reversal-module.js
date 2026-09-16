@@ -1,5 +1,5 @@
 import {auth,db} from '../../firebase-config.js';
-import {collection,doc,getDoc,getDocs,limit,orderBy,query,runTransaction} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
+import {collection,doc,getDocs,limit,orderBy,query,runTransaction} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
 import {applyInventorySummaryDelta,inventorySummaryDelta} from '../inventory/inventory-summary.js';
 
 const $=id=>document.getElementById(id);
@@ -12,7 +12,7 @@ let movements=[],services=[],loading=false;
 function balances(i){return(Array.isArray(i?.stockBalances)?i.stockBalances:[]).filter(x=>Number(x.qty||0)>0).map(x=>({...x,qty:Number(x.qty||0),locationType:x.locationType||'',locationId:x.locationId||'',locationName:x.locationName||x.location||'Unknown',status:x.status||'Not Available'}));}
 function summary(b){const p=b.filter(x=>x.qty>0),priority=['In Transit','Maintenance','Inspection','At Client','Reserved','Missing','Stolen','Not Available','At Supplier','Available'];return!p.length?{status:'Not Available',location:'No Stock'}:{status:priority.find(s=>p.some(x=>x.status===s))||'Not Available',location:p.length===1?p[0].locationName:`${p.length} Locations`};}
 function same(b,type,id,name){return b&&b.locationType===type&&((id&&String(b.locationId||'')===String(id))||norm(b.locationName)===norm(name));}
-function sourceStatus(type,fallback=''){return fallback||type==='warehouse'?'Available':type==='client'?'At Client':type==='supplier'?'At Supplier':'Not Available';}
+function sourceStatus(type,fallback=''){if(fallback)return fallback;return type==='warehouse'?'Available':type==='client'?'At Client':type==='supplier'?'At Supplier':'Not Available';}
 function finalStatus(type,failed){if(failed)return'Not Available';return type==='warehouse'?'Available':type==='client'?'At Client':type==='supplier'?'At Supplier':'Not Available';}
 function addBalance(list,{qty,locationType,locationId,locationName,status}){let dst=list.find(b=>same(b,locationType,locationId,locationName)&&b.status===status);if(dst)dst.qty+=qty;else list.push({qty,locationType,locationId:locationId||'',locationName:locationName||'Unknown',status});}
 function removeFrom(list,predicate,qty,label){let remaining=qty;for(const b of list.filter(predicate)){const take=Math.min(b.qty,remaining);b.qty-=take;remaining-=take;if(!remaining)break;}if(remaining>0)throw new Error(`${label} stock is no longer available in the expected state. Reverse the later transaction first.`);}
