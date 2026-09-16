@@ -1,11 +1,12 @@
-import { can, currentRole } from './ims-permissions.js?v=20260916-63';
+import { can, currentRole } from './ims-permissions.js?v=20260916-64';
 
-const IMS_BUILD='20260916-63';
+const IMS_BUILD='20260916-64';
 const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${IMS_BUILD}`;
 
 const MODULES=Object.freeze([
 {id:'nav-active-fix',src:'./nav-active-fix.js',mode:'classic'},
 {id:'date-standard',src:'./date-standard.js',mode:'classic'},
+{id:'error-monitor',src:'./ims-error-monitor.js',owner:'IMSErrorMonitor'},
 {id:'masters',src:'./modules/masters/masters-module.js',permission:'masters.view',owner:'IMSMasters'},
 {id:'masters-csv',src:'./modules/masters/master-import-export.js',roles:['manager','superadmin'],owner:'IMSMasterCSV'},
 {id:'businesses',src:'./modules/businesses/business-module.js',permission:'business.view',owner:'IMSBusinesses'},
@@ -54,10 +55,10 @@ async function loadOne(def){await(def.mode==='classic'?loadClassic(def):loadModu
 function refreshImportExport(){if(window.IMSRegistrationCSV?.install){queueMicrotask(()=>window.IMSRegistrationCSV?.install?.());setTimeout(()=>window.IMSRegistrationCSV?.install?.(),100);}if(window.IMSBusinessCSV?.install){queueMicrotask(()=>window.IMSBusinessCSV?.install?.());setTimeout(()=>window.IMSBusinessCSV?.install?.(),150);}if(window.IMSMasterCSV?.install){queueMicrotask(()=>window.IMSMasterCSV?.install?.());setTimeout(()=>window.IMSMasterCSV?.install?.(),150);}}
 function bindDirectNavigation(){const stock=document.querySelector('.navBtn[data-tab="stock"]');if(stock&&window.IMSInventory)stock.onclick=()=>window.IMSInventory.show('overview');const workspace=document.querySelector('.navBtn[data-tab="workspace"]');if(workspace&&window.IMSWorkspace)workspace.onclick=()=>window.IMSWorkspace.show();}
 function publishStatus(loaded,failed,skipped){const owners=Object.fromEntries(MODULES.filter(x=>x.owner).map(x=>[x.id,{owner:x.owner,ready:Boolean(window[x.owner]),allowed:allowed(x)}]));window.IMSModules=Object.freeze({build:IMS_BUILD,loaded:[...loaded],failed:[...failed],skipped:[...skipped],owners,registry:MODULES});window.dispatchEvent(new CustomEvent('ims:modules-ready',{detail:window.IMSModules}));console.info('IMS consolidated module status',window.IMSModules);}
-async function bootOptionalModules(){await waitForAuth();const loaded=[],failed=[],skipped=[];for(const def of MODULES){if(!allowed(def)){skipped.push(def.id);continue;}try{await loadOne(def);loaded.push(def.id);refreshImportExport();}catch(error){failed.push({id:def.id,error:String(error?.message||error)});console.error(`IMS module failed: ${def.id}`,error);}}bindDirectNavigation();refreshImportExport();publishStatus(loaded,failed,skipped);if(window.IMSWorkspace&&!document.querySelector('[data-ims-workspace-module="1"]'))window.IMSWorkspace.show();return window.IMSModules;}
+async function bootOptionalModules(){await waitForAuth();const loaded=[],failed=[],skipped=[];for(const def of MODULES){if(!allowed(def)){skipped.push(def.id);continue;}try{await loadOne(def);loaded.push(def.id);refreshImportExport();}catch(error){failed.push({id:def.id,error:String(error?.message||error)});console.error(`IMS module failed: ${def.id}`,error);window.IMSErrorMonitor?.record?.({message:error?.message||String(error),source:def.src,kind:'module-load'});}}bindDirectNavigation();refreshImportExport();publishStatus(loaded,failed,skipped);if(window.IMSWorkspace&&!document.querySelector('[data-ims-workspace-module="1"]'))window.IMSWorkspace.show();return window.IMSModules;}
 window.addEventListener('ims:workspace-rendered',refreshImportExport);
 window.addEventListener('ims:registration-ready',refreshImportExport);
 window.addEventListener('ims:renttorent-ready',refreshImportExport);
 window.addEventListener('ims:businesses-ready',refreshImportExport);
 window.addEventListener('ims:masters-ready',refreshImportExport);
-bootOptionalModules().catch(error=>console.error('IMS module loader failed:',error));export {MODULES,IMS_BUILD,bootOptionalModules};
+bootOptionalModules().catch(error=>{console.error('IMS module loader failed:',error);window.IMSErrorMonitor?.record?.({message:error?.message||String(error),source:'ims-module-loader.js',kind:'boot'});});export {MODULES,IMS_BUILD,bootOptionalModules};
