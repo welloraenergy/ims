@@ -1,6 +1,6 @@
-import { can, currentRole } from './ims-permissions.js?v=20260916-65';
+import { can, currentRole } from './ims-permissions.js?v=20260916-66';
 
-const IMS_BUILD='20260916-65';
+const IMS_BUILD='20260916-66';
 const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${IMS_BUILD}`;
 
 const MODULES=Object.freeze([
@@ -15,6 +15,7 @@ const MODULES=Object.freeze([
 {id:'users',src:'./modules/users/users-module.js',permission:'users.view',owner:'IMSUsers'},
 {id:'audit',src:'./modules/audit/audit-module.js',permission:'audit.view',owner:'IMSAudit'},
 {id:'reversal',src:'./modules/reversal/reversal-module.js',roles:['superadmin'],owner:'IMSReversal'},
+{id:'reversal-search',src:'./modules/reversal/reversal-search.js',roles:['superadmin'],owner:'IMSReversalSearch'},
 {id:'reversal-lifecycle',src:'./modules/reversal/reversal-lifecycle.js',roles:['superadmin'],owner:'IMSReversalLifecycle'},
 {id:'reversal-status',src:'./modules/reversal/reversal-status.js',roles:['superadmin'],owner:'IMSReversalStatus'},
 {id:'reversal-wiring',src:'./modules/reversal/reversal-wiring.js',roles:['superadmin'],owner:'IMSReversalWiring'},
