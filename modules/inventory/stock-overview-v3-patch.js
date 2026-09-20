@@ -5,15 +5,6 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const norm=s=>String(s??'').trim().replace(/\s+/g,' ').toLowerCase();
 let busy=false;
 
-function hideModelColumn(){
-  document.querySelectorAll('#stockTable table').forEach(table=>{
-    const heads=[...table.querySelectorAll('thead th')],idx=heads.findIndex(th=>norm(th.textContent)==='model');
-    if(idx<0)return;
-    table.querySelectorAll('tr').forEach(tr=>tr.children[idx]?.remove());
-    table.style.minWidth='2200px';
-  });
-}
-
 function removeNonLiveExceptions(){
   const root=document.getElementById('appContent');if(!root)return;
   root.querySelectorAll('[title]').forEach(el=>{const t=String(el.getAttribute('title')||'');if(/^Missing:|^Stolen:/.test(t))el.remove();});
@@ -53,7 +44,7 @@ function installCategoryIntercept(){
   },true);
 }
 
-function patch(){hideModelColumn();removeNonLiveExceptions();}
+function patch(){removeNonLiveExceptions();}
 installCategoryIntercept();
 let timer;new MutationObserver(()=>{clearTimeout(timer);timer=setTimeout(patch,30);}).observe(document.body,{childList:true,subtree:true});
 patch();
