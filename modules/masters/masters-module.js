@@ -14,8 +14,7 @@ const MASTER_GROUPS=Object.freeze([
   {type:'connection',label:'Connections'},
   {type:'range',label:'Ranges'},
   {type:'weight_unit',label:'Weight Units'},
-  {type:'brand',label:'Brands'},
-  {type:'specification',label:'Specifications'}
+  {type:'brand',label:'Brands'}
 ]);
 let settings=[];
 const byId=id=>document.getElementById(id);
