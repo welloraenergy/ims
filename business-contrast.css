@@ -115,13 +115,6 @@ textarea::placeholder {
   display: none !important;
 }
 
-/* Legacy master fields: Spec and Model remain stored but are not user-facing. */
-label:has(#regModel),
-label:has(#r2rModel),
-label:has(#ime-model) {
-  display: none !important;
-}
-
 /* Left navigation: gold by default, visibly darker/outlined when active. */
 #navTabs .navBtn {
   background: #d3af36 !important;
