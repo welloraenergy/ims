@@ -59,7 +59,9 @@ function renderSetting(){
     card.className='w-full bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xl';
     root.firstElementChild?.after(card);
   }
-  const editable=can('masters.status');
+  const editable=can('masters.status'),state=`${enabled?'1':'0'}|${editable?'1':'0'}`;
+  if(card.dataset.state===state)return;
+  card.dataset.state=state;
   card.innerHTML=`<div class="flex flex-wrap items-center justify-between gap-3"><div><h2 class="font-bold text-sm sm:text-base">Input Format</h2><p class="text-xs text-slate-400 mt-1">Force normal text inputs and textareas to UPPERCASE across IMS. Email fields are not changed.</p></div><button id="imsUppercaseToggle" type="button" class="${enabled?'bg-emerald-700':'bg-slate-700'} px-4 py-2 rounded-lg text-xs font-bold" ${editable?'':'disabled'}>${enabled?'ON':'OFF'}</button></div>`;
   const btn=document.getElementById('imsUppercaseToggle');if(btn&&editable)btn.onclick=()=>setEnabled(!enabled).catch(e=>alert('Unable to change input format setting: '+(e?.message||e)));
 }
