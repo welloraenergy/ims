@@ -1,6 +1,6 @@
-import { can, currentRole } from './ims-permissions.js?v=20260920-82';
+import { can, currentRole } from './ims-permissions.js?v=20260920-83';
 
-const IMS_BUILD='20260920-82';
+const IMS_BUILD='20260920-83';
 const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${IMS_BUILD}`;
 
 const MODULES=Object.freeze([
@@ -44,6 +44,7 @@ const MODULES=Object.freeze([
 {id:'client-doc-enrichment',src:'./ims-client-doc-enrichment.js',owner:'IMSClientDocEnrichment'},
 {id:'inventory-sort',src:'./modules/inventory/inventory-sort.js',permission:'inventory.view',owner:'IMSInventoryServerSort'},
 {id:'service-transit-fix',src:'./modules/service-cycle/service-cycle-transit-fix.js',permission:'servicecycle.view',owner:'IMSServiceTransitFix'},
+{id:'service-restart-routing',src:'./modules/service-cycle/service-cycle-restart-routing.js',permission:'servicecycle.view',owner:'IMSServiceRestartRouting'},
 {id:'service-enhancements',src:'./modules/service-cycle/service-cycle-enhancements.js',permission:'servicecycle.view',owner:'IMSServiceEnhancements'},
 {id:'item-master-editor',src:'./modules/items/item-master-editor.js',permission:'inventory.view',owner:'IMSItemMasterEditor'},
 {id:'sortable-tables',src:'./sortable-tables.js',mode:'classic'},
