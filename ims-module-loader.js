@@ -40,7 +40,7 @@ const MODULES=Object.freeze([
 {id:'available-picker-pagination',src:'./modules/shared/paginated-available-pickers.js',owner:'IMSAvailablePickerPagination'},
 {id:'commercial-context',src:'./ims-commercial-context.js',owner:'IMSCommercialContext'},
 {id:'client-due-warning',src:'./ims-client-due-warning.js',owner:'IMSDueWarning'},
-{id:'client-doc-enrichment',src:'./ims-client-doc-enrichment.js',owner:'IMSDocEnrichment'},
+{id:'client-doc-enrichment',src:'./ims-client-doc-enrichment.js',owner:'IMSClientDocEnrichment'},
 {id:'inventory-sort',src:'./modules/inventory/inventory-sort.js',permission:'inventory.view',owner:'IMSInventoryServerSort'},
 {id:'service-transit-fix',src:'./modules/service-cycle/service-cycle-transit-fix.js',permission:'servicecycle.view',owner:'IMSServiceTransitFix'},
 {id:'service-enhancements',src:'./modules/service-cycle/service-cycle-enhancements.js',permission:'servicecycle.view',owner:'IMSServiceEnhancements'},
