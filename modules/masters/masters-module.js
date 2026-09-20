@@ -15,7 +15,6 @@ const MASTER_GROUPS=Object.freeze([
   {type:'range',label:'Ranges'},
   {type:'weight_unit',label:'Weight Units'},
   {type:'brand',label:'Brands'},
-  {type:'model',label:'Models'},
   {type:'specification',label:'Specifications'}
 ]);
 let settings=[];
