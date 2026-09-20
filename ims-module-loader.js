@@ -1,13 +1,12 @@
-import { can, currentRole } from './ims-permissions.js?v=20260917-75';
+import { can, currentRole } from './ims-permissions.js?v=20260920-76';
 
-const IMS_BUILD='20260917-75';
+const IMS_BUILD='20260920-76';
 const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${IMS_BUILD}`;
 
 const MODULES=Object.freeze([
 {id:'nav-active-fix',src:'./nav-active-fix.js',mode:'classic'},
 {id:'date-standard',src:'./date-standard.js',mode:'classic'},
 {id:'error-monitor',src:'./ims-error-monitor.js',owner:'IMSErrorMonitor'},
-{id:'indexed-loose-search',src:'./modules/shared/indexed-loose-search.js',owner:'IMSIndexedLooseSearch'},
 {id:'masters',src:'./modules/masters/masters-module.js',permission:'masters.view',owner:'IMSMasters'},
 {id:'masters-csv',src:'./modules/masters/master-import-export.js',roles:['manager','superadmin'],owner:'IMSMasterCSV'},
 {id:'businesses',src:'./modules/businesses/business-module.js',permission:'business.view',owner:'IMSBusinesses'},
