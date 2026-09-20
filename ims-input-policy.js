@@ -1,5 +1,5 @@
 import {auth,db} from './firebase-config.js';
-import {addDoc,doc,getDoc,setDoc} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
+import {addDoc,collection,doc,getDoc,setDoc} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
 import {can} from './ims-permissions.js';
 
 const PREF_ID='system-input-uppercase';
@@ -35,7 +35,7 @@ async function reload(){
 }
 async function audit(before,after){
   try{
-    await addDoc((await import('https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js')).collection(db,'audit_traces'),{
+    await addDoc(collection(db,'audit_traces'),{
       traceVersion:3,actionType:'CHANGE_SYSTEM_SETTING',module:'Global Settings',targetType:'system_preference',targetName:'Force text input to UPPERCASE',targetId:PREF_ID,summary:`Force text input to UPPERCASE: ${after?'ON':'OFF'}`,beforeValue:{enabled:before},afterValue:{enabled:after},changedFields:['enabled'],remark:'Email inputs are excluded.',performedBy:window.IMSUser?.email||auth.currentUser?.email||'',performedByRole:window.IMS_ROLE||'',performedAt:now()
     });
   }catch(error){console.warn('IMS input policy audit failed:',error);}
@@ -57,7 +57,7 @@ function renderSetting(){
     card=document.createElement('section');
     card.id='imsInputPolicySetting';
     card.className='w-full bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xl';
-    const first=root.firstElementChild;first?.after(card);
+    root.firstElementChild?.after(card);
   }
   const editable=can('masters.status');
   card.innerHTML=`<div class="flex flex-wrap items-center justify-between gap-3"><div><h2 class="font-bold text-sm sm:text-base">Input Format</h2><p class="text-xs text-slate-400 mt-1">Force normal text inputs and textareas to UPPERCASE across IMS. Email fields are not changed.</p></div><button id="imsUppercaseToggle" type="button" class="${enabled?'bg-emerald-700':'bg-slate-700'} px-4 py-2 rounded-lg text-xs font-bold" ${editable?'':'disabled'}>${enabled?'ON':'OFF'}</button></div>`;
