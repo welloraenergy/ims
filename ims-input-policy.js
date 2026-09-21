@@ -6,7 +6,16 @@ const PREF_ID='system-input-uppercase';
 let enabled=true;
 const now=()=>new Date().toISOString();
 
+function emailLike(el){
+  if(!(el instanceof HTMLInputElement||el instanceof HTMLTextAreaElement))return false;
+  const type=String(el.type||'').toLowerCase();
+  if(type==='email')return true;
+  if(String(el.autocomplete||'').toLowerCase()==='email')return true;
+  const hint=[el.id,el.name,el.placeholder,el.getAttribute?.('aria-label')].filter(Boolean).join(' ').toLowerCase();
+  return /(^|[^a-z])e-?mail([^a-z]|$)|(^|[^a-z])email([^a-z]|$)/.test(hint);
+}
 function eligible(el){
+  if(emailLike(el))return false;
   if(el instanceof HTMLTextAreaElement)return true;
   if(!(el instanceof HTMLInputElement))return false;
   const type=String(el.type||'text').toLowerCase();
@@ -36,7 +45,7 @@ async function reload(){
 async function audit(before,after){
   try{
     await addDoc(collection(db,'audit_traces'),{
-      traceVersion:3,actionType:'CHANGE_SYSTEM_SETTING',module:'Global Settings',targetType:'system_preference',targetName:'Force text input to UPPERCASE',targetId:PREF_ID,summary:`Force text input to UPPERCASE: ${after?'ON':'OFF'}`,beforeValue:{enabled:before},afterValue:{enabled:after},changedFields:['enabled'],remark:'Email inputs are excluded.',performedBy:window.IMSUser?.email||auth.currentUser?.email||'',performedByRole:window.IMS_ROLE||'',performedAt:now()
+      traceVersion:3,actionType:'CHANGE_SYSTEM_SETTING',module:'Global Settings',targetType:'system_preference',targetName:'Force text input to UPPERCASE',targetId:PREF_ID,summary:`Force text input to UPPERCASE: ${after?'ON':'OFF'}`,beforeValue:{enabled:before},afterValue:{enabled:after},changedFields:['enabled'],remark:'Email inputs and email-like search fields are excluded.',performedBy:window.IMSUser?.email||auth.currentUser?.email||'',performedByRole:window.IMS_ROLE||'',performedAt:now()
     });
   }catch(error){console.warn('IMS input policy audit failed:',error);}
 }
@@ -62,7 +71,7 @@ function renderSetting(){
   const editable=can('masters.status'),state=`${enabled?'1':'0'}|${editable?'1':'0'}`;
   if(card.dataset.state===state)return;
   card.dataset.state=state;
-  card.innerHTML=`<div class="flex flex-wrap items-center justify-between gap-3"><div><h2 class="font-bold text-sm sm:text-base">Input Format</h2><p class="text-xs text-slate-400 mt-1">Force normal text inputs and textareas to UPPERCASE across IMS. Email fields are not changed.</p></div><button id="imsUppercaseToggle" type="button" class="${enabled?'bg-emerald-700':'bg-slate-700'} px-4 py-2 rounded-lg text-xs font-bold" ${editable?'':'disabled'}>${enabled?'ON':'OFF'}</button></div>`;
+  card.innerHTML=`<div class="flex flex-wrap items-center justify-between gap-3"><div><h2 class="font-bold text-sm sm:text-base">Input Format</h2><p class="text-xs text-slate-400 mt-1">Force normal text inputs and textareas to UPPERCASE across IMS. Email fields and email searches are not changed.</p></div><button id="imsUppercaseToggle" type="button" class="${enabled?'bg-emerald-700':'bg-slate-700'} px-4 py-2 rounded-lg text-xs font-bold" ${editable?'':'disabled'}>${enabled?'ON':'OFF'}</button></div>`;
   const btn=document.getElementById('imsUppercaseToggle');if(btn&&editable)btn.onclick=()=>setEnabled(!enabled).catch(e=>alert('Unable to change input format setting: '+(e?.message||e)));
 }
 
