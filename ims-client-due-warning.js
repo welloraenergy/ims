@@ -1,5 +1,5 @@
 import {db} from './firebase-config.js';
-import {collection,doc,getDoc,getDocs,limit,query,where} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
+import {collection,doc,getDoc,getDocs,query,where} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
 
 const DAY=86400000;
 const CLOSED=new Set(['Extended / Superseded','Cancelled','Closed']);
@@ -31,7 +31,7 @@ async function loadRefs(force=false){
   if(!force&&Date.now()-lastLoad<30000)return refs;
   loading=true;
   try{
-    const snap=await getDocs(query(collection(db,'document_refs'),where('commercialSide','==','client'),limit(200)));
+    const snap=await getDocs(query(collection(db,'document_refs'),where('commercialSide','==','client')));
     refs=snap.docs.map(d=>({id:d.id,...d.data()})).filter(r=>r.docType==='Commercial PO'&&r.periodTo&&!CLOSED.has(r.poStatus||'Open'));
     lastLoad=Date.now();
     return refs;
@@ -44,7 +44,7 @@ function mostUrgentFromRefs(itemId,holds){
 }
 async function movementDueForItem(itemId,holds){
   if(!holds.length)return null;
-  const snap=await getDocs(query(collection(db,'movements'),where('itemId','==',itemId),where('action','==','DELIVER_CLIENT'),limit(25)));
+  const snap=await getDocs(query(collection(db,'movements'),where('itemId','==',itemId),where('action','==','DELIVER_CLIENT')));
   const rows=snap.docs.map(d=>d.data()).filter(m=>m.periodTo&&m.status==='arrived'&&holds.some(b=>String(b.locationId||'')===String(m.toId||m.destinationId||m.partyId||''))).map(m=>({po:m.referenceNumber||'',due:m.periodTo,status:'Open',createdAt:m.createdAt||'',state:dueState(m.periodTo,'Open')})).filter(x=>x.state).sort((a,b)=>a.state.days-b.state.days||String(b.createdAt).localeCompare(String(a.createdAt)));
   return rows[0]||null;
 }
