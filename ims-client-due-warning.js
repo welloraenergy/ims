@@ -48,16 +48,26 @@ async function movementDueForItem(itemId,holds){
   const rows=snap.docs.map(d=>d.data()).filter(m=>m.periodTo&&m.status==='arrived'&&holds.some(b=>String(b.locationId||'')===String(m.toId||m.destinationId||m.partyId||''))).map(m=>({po:m.referenceNumber||'',due:m.periodTo,status:'Open',createdAt:m.createdAt||'',state:dueState(m.periodTo,'Open')})).filter(x=>x.state).sort((a,b)=>a.state.days-b.state.days||String(b.createdAt).localeCompare(String(a.createdAt)));
   return rows[0]||null;
 }
+function documentRefForRow(cells,headers){
+  const poIndex=headers.findIndex(x=>x==='po'),businessIndex=headers.findIndex(x=>x==='business');
+  if(poIndex<0)return null;
+  const po=(cells[poIndex]?.textContent||'').trim(),business=businessIndex>=0?(cells[businessIndex]?.textContent||'').trim():'';
+  const matches=refs.filter(r=>String(r.poNumber||r.refNumber||'').trim()===po);
+  if(!matches.length)return null;
+  if(business){const exact=matches.find(r=>String(r.businessName||'').trim()===business);if(exact)return exact;}
+  return matches[0]||null;
+}
 function decorateDocuments(){
   const table=document.querySelector('#docTable table');if(!table)return;
-  const headers=[...table.querySelectorAll('thead th')].map(x=>x.textContent.trim().toLowerCase()),dueIndex=headers.findIndex(x=>x==='due date'),statusIndex=headers.findIndex(x=>x==='status');
+  const headers=[...table.querySelectorAll('thead th')].map(x=>x.textContent.trim().toLowerCase()),dueIndex=headers.findIndex(x=>x==='due date');
   if(dueIndex<0)return;
   for(const tr of table.querySelectorAll('tbody tr')){
     const cells=[...tr.children];if(cells.length<=dueIndex)continue;
     tr.querySelectorAll('[data-ims-due-badge]').forEach(x=>x.remove());cleanClasses(tr);cells[dueIndex]?.classList.remove('text-red-200','text-rose-200','text-yellow-200','font-bold');
-    const due=cells[dueIndex]?.textContent.trim()||'',status=statusIndex>=0?cells[statusIndex]?.textContent.replace(/^DUE\s*·\s*/i,'').trim():'Open',state=dueState(due,status);if(!state)continue;
+    const ref=documentRefForRow(cells,headers);if(!ref)continue;
+    const state=dueState(ref.periodTo,ref.poStatus||'Open');if(!state)continue;
     tr.classList.add(...state.row.split(' '));cells[dueIndex].classList.add(dueTextClass(state),'font-bold');cells[dueIndex].insertAdjacentHTML('beforeend',`<div class="mt-1">${badgeHtml(state,'','')}</div>`);
-    const action=tr.querySelector('.openPO');if(action){action.classList.remove('bg-slate-700','bg-red-600','bg-red-800','bg-rose-700','bg-yellow-700');action.classList.add(state.tone==='yellow'?'bg-yellow-700':state.tone==='light-red'?'bg-rose-700':'bg-red-600');action.textContent=state.tone==='yellow'?'Review':'Act Now';}
+    const action=tr.querySelector('.openPO');if(action){action.classList.remove('bg-slate-700','bg-red-600','bg-red-700','bg-red-800','bg-rose-700','bg-yellow-700');action.classList.add(state.tone==='yellow'?'bg-yellow-700':state.tone==='light-red'?'bg-rose-700':'bg-red-600');action.textContent=state.tone==='yellow'?'Review':'Act Now';}
   }
 }
 async function decorateAtClient(){
