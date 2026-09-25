@@ -1,5 +1,5 @@
 import {db} from './firebase-config.js';
-import {collection,getDocs,limit,query,where} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
+import {collection,doc,getDoc,getDocs,limit,query,where} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
 
 const DAY=86400000;
 const CLOSED=new Set(['Extended / Superseded','Cancelled','Closed']);
@@ -23,6 +23,8 @@ function cleanClasses(el){for(const c of [...el.classList])if(c.startsWith('bord
 function dueTextClass(state){return state.tone==='yellow'?'text-yellow-200':state.tone==='light-red'?'text-rose-200':'text-red-200';}
 function dueBorderClass(state){return state.tone==='yellow'?'border-yellow-900/60':state.tone==='light-red'?'border-rose-900/60':'border-red-900/60';}
 function dueCaptionClass(state){return state.tone==='yellow'?'text-yellow-200/80':state.tone==='light-red'?'text-rose-200/80':'text-red-200/80';}
+function positiveBalances(i){return(Array.isArray(i?.stockBalances)?i.stockBalances:[]).filter(b=>Number(b.qty||0)>0);}
+async function currentClientHolds(itemId){const s=await getDoc(doc(db,'inventory',itemId));if(!s.exists())return[];return positiveBalances(s.data()).filter(b=>b.locationType==='client'&&['At Client','Not Available'].includes(b.status));}
 
 async function loadRefs(force=false){
   if(loading)return refs;
@@ -35,14 +37,15 @@ async function loadRefs(force=false){
     return refs;
   }finally{loading=false;}
 }
-function mostUrgentFromRefs(itemId){
-  const matches=refs.filter(r=>Array.isArray(r.linkedItemIds)&&r.linkedItemIds.includes(itemId)).map(r=>({po:r.poNumber||r.refNumber||'',due:r.periodTo,status:r.poStatus||'Open',state:dueState(r.periodTo,r.poStatus||'Open')})).filter(x=>x.state);
+function mostUrgentFromRefs(itemId,holds){
+  const matches=refs.filter(r=>Array.isArray(r.linkedItemIds)&&r.linkedItemIds.includes(itemId)&&holds.some(b=>String(b.locationId||'')===String(r.businessId||''))).map(r=>({po:r.poNumber||r.refNumber||'',due:r.periodTo,status:r.poStatus||'Open',businessId:r.businessId||'',state:dueState(r.periodTo,r.poStatus||'Open')})).filter(x=>x.state);
   matches.sort((a,b)=>a.state.days-b.state.days);
   return matches[0]||null;
 }
-async function movementDueForItem(itemId){
+async function movementDueForItem(itemId,holds){
+  if(!holds.length)return null;
   const snap=await getDocs(query(collection(db,'movements'),where('itemId','==',itemId),where('action','==','DELIVER_CLIENT'),limit(25)));
-  const rows=snap.docs.map(d=>d.data()).filter(m=>m.periodTo&&m.status==='arrived').map(m=>({po:m.referenceNumber||'',due:m.periodTo,status:'Open',createdAt:m.createdAt||'',state:dueState(m.periodTo,'Open')})).filter(x=>x.state).sort((a,b)=>a.state.days-b.state.days||String(b.createdAt).localeCompare(String(a.createdAt)));
+  const rows=snap.docs.map(d=>d.data()).filter(m=>m.periodTo&&m.status==='arrived'&&holds.some(b=>String(b.locationId||'')===String(m.toId||m.destinationId||m.partyId||''))).map(m=>({po:m.referenceNumber||'',due:m.periodTo,status:'Open',createdAt:m.createdAt||'',state:dueState(m.periodTo,'Open')})).filter(x=>x.state).sort((a,b)=>a.state.days-b.state.days||String(b.createdAt).localeCompare(String(a.createdAt)));
   return rows[0]||null;
 }
 function decorateDocuments(){
@@ -61,7 +64,8 @@ async function decorateAtClient(){
   const root=document.querySelector('[data-workspace-queue="client"]');if(!root)return;
   for(const card of root.querySelectorAll('.workspaceOpenItem[data-id]')){
     card.querySelectorAll('[data-ims-due-strip]').forEach(x=>x.remove());cleanClasses(card);
-    let hit=mostUrgentFromRefs(card.dataset.id);if(!hit)hit=await movementDueForItem(card.dataset.id);if(!hit)continue;
+    const holds=await currentClientHolds(card.dataset.id);if(!holds.length)continue;
+    let hit=mostUrgentFromRefs(card.dataset.id,holds);if(!hit)hit=await movementDueForItem(card.dataset.id,holds);if(!hit)continue;
     const{state,due,po}=hit;card.classList.add(...state.row.split(' '));card.insertAdjacentHTML('beforeend',`<div data-ims-due-strip class="mt-3 pt-2 border-t ${dueBorderClass(state)} flex flex-wrap items-center justify-between gap-2"><div>${badgeHtml(state,due,po)}</div><div class="text-[10px] ${dueCaptionClass(state)}">Client PO due warning</div></div>`);
   }
 }
