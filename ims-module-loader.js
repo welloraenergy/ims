@@ -1,6 +1,6 @@
-import { can, currentRole } from './ims-permissions.js?v=20260920-100';
+import { can, currentRole } from './ims-permissions.js?v=20260920-101';
 
-const IMS_BUILD='20260920-100';
+const IMS_BUILD='20260920-101';
 const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${IMS_BUILD}`;
 
 const MODULES=Object.freeze([
@@ -24,7 +24,6 @@ const MODULES=Object.freeze([
 {id:'backup-v8',src:'./modules/backup/backup-v8.js',roles:['superadmin'],owner:'IMSBackupV8'},
 {id:'items',src:'./modules/items/item-module.js',permission:'inventory.view',owner:'IMSItems'},
 {id:'inventory',src:'./modules/inventory/inventory-module.js',permission:'inventory.view',owner:'IMSInventory'},
-{id:'inventory-filter-masters',src:'./modules/inventory/inventory-filter-masters.js',permission:'inventory.view',owner:'IMSInventoryFilterMasters'},
 {id:'workspace',src:'./modules/workspace/workspace-module.js',permission:'app.view',owner:'IMSWorkspace'},
 {id:'registration',src:'./modules/registration/registration-module.js',permission:'inventory.add',owner:'IMSRegistration'},
 {id:'registration-import-export',src:'./modules/registration/registration-import-export.js',roles:['manager','superadmin'],owner:'IMSRegistrationCSV'},
@@ -42,7 +41,6 @@ const MODULES=Object.freeze([
 {id:'commercial-context',src:'./ims-commercial-context.js',owner:'IMSCommercialContext'},
 {id:'client-due-warning',src:'./ims-client-due-warning.js',owner:'IMSDueWarning'},
 {id:'client-doc-enrichment',src:'./ims-client-doc-enrichment.js',owner:'IMSClientDocEnrichment'},
-{id:'inventory-sort',src:'./modules/inventory/inventory-sort.js',permission:'inventory.view',owner:'IMSInventoryServerSort'},
 {id:'service-transit-fix',src:'./modules/service-cycle/service-cycle-transit-fix.js',permission:'servicecycle.view',owner:'IMSServiceTransitFix'},
 {id:'service-enhancements',src:'./modules/service-cycle/service-cycle-enhancements.js',permission:'servicecycle.view',owner:'IMSServiceEnhancements'},
 {id:'item-master-editor',src:'./modules/items/item-master-editor.js',permission:'inventory.view',owner:'IMSItemMasterEditor'},
