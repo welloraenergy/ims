@@ -1,7 +1,7 @@
 import {auth,db} from '../../firebase-config.js';
 import {addDoc,collection,doc,documentId,getCountFromServer,getDocs,limit,orderBy,query,runTransaction,startAfter,where} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
 import {can} from '../../ims-permissions.js';
-import {applyInventorySummaryDelta,combineInventorySummaryDeltas,inventorySummaryDelta} from '../inventory/inventory-summary.js';
+import {applyInventorySummaryDelta,combineInventorySummaryDeltas,inventorySummaryDelta} from '../inventory/inventory-summary.js?v=20260920-99';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),norm=s=>String(s??'').trim().replace(/\s+/g,' ').toLowerCase(),cls='w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-sm',now=()=>new Date().toISOString();
 const PAGE_SIZE=50;
 let items=[],clients=[],settings=[],activeReservations=[],reservationCursor=null,reservationHistory=[],reservationLastDoc=null,reservationPage=1,reservationTotal=0;
