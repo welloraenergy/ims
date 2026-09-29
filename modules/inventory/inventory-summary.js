@@ -1,8 +1,7 @@
 import {db} from '../../firebase-config.js';
 import {collection,doc,getDocs,runTransaction,setDoc} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
-import './stock-overview-v3-patch.js';
 
-export const SUMMARY_VERSION=4;
+export const SUMMARY_VERSION=5;
 export const SUMMARY_GLOBAL=doc(db,'inventory_summary','global');
 export const SUMMARY_DISTRIBUTION=doc(db,'inventory_summary','distribution');
 export const SUMMARY_CATEGORIES=doc(db,'inventory_summary','categories');
