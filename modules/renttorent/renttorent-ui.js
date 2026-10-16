@@ -1,8 +1,11 @@
 // Current Rent-to-Rent presentation refinement. Kept separate from the workflow engine because it is UI-only.
 const $=id=>document.getElementById(id);
-const KINDS=['supplier','incoming','warehouse','returning'];
+const KINDS=['supplier','clientIncoming','client','clientReturning','incoming','warehouse','returning'];
 const TITLES={
-  supplier:{title:'R2R Ready at Supplier',subtitle:'Supplier-owned stock awaiting dispatch to our warehouse'},
+  supplier:{title:'R2R Ready at Supplier',subtitle:'Supplier-owned stock ready for dispatch to client or warehouse'},
+  clientIncoming:{title:'R2R Supplier → Client · In Transit',subtitle:'Direct deliveries awaiting client arrival confirmation'},
+  client:{title:'R2R At Client',subtitle:'Supplier-owned rentals physically with clients'},
+  clientReturning:{title:'R2R Client Returns · In Transit',subtitle:'Client returns awaiting arrival at supplier or warehouse'},
   incoming:{title:'R2R Supplier → Warehouse · In Transit',subtitle:'Physical R2R movements waiting for warehouse arrival'},
   warehouse:{title:'R2R in Warehouse',subtitle:'R2R items currently available in warehouse'},
   returning:{title:'R2R Warehouse → Supplier · In Transit',subtitle:'Physical R2R returns waiting for supplier arrival'}
