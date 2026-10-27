@@ -69,7 +69,7 @@ function normalizeCards(kind){
     const left=pick?.parentElement;if(left)left.className='min-w-0 flex-1';
     const open=card.querySelector('.r2rOpen');if(open)open.className='r2rOpen w-full text-left min-w-0 flex-1 hover:border-cyan-800';
     const grid=open?.querySelector('.grid');if(grid)grid.className='grid sm:grid-cols-2 lg:grid-cols-6 gap-2 mt-2';
-    const movementLine=open?.querySelector('.font-mono.text-\[9px\]');if(movementLine)movementLine.classList.add('hidden');
+    const movementLine=open?.querySelector('.font-mono');if(movementLine)movementLine.classList.add('hidden');
     const action=card.querySelector('.r2rSingle');if(action)action.className='r2rSingle shrink-0 bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg text-xs font-bold';
   });
 }
