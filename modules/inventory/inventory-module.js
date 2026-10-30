@@ -14,7 +14,7 @@ const PAGE_SIZE=50;
 let view='overview',drill=null,overviewSummary=null,pendingDirectoryCategory='';
 let directoryItems=[],directoryPage=0,directoryTotal=0,directoryCursors=[null],directoryLoading=false;
 let directoryQueryState={searchField:'',searchValue:'',filters:{category:'',size:'',status:'',currentLocation:'',ownershipType:''}};
-let directorySortField='',directorySortDir='asc';
+let directorySortField='alias',directorySortDir='asc';
 let masterCategories=[],masterSizes=[],masterLocations=[],masterLoading=null;
 
 function balances(i){return(Array.isArray(i?.stockBalances)?i.stockBalances:[]).filter(b=>Number(b.qty||0)>0).map(b=>({...b,qty:Number(b.qty||0),locationType:b.locationType||'',locationId:b.locationId||'',locationName:b.locationName||b.location||'Unknown',status:b.status||'Not Available'}));}
