@@ -30,6 +30,7 @@ export function summarizeItem(item={}){
       global.liveQty+=q;isR2R?global.r2rQty+=q:global.ownedQty+=q;addValue(categories,category,q);addDimensions(categoryDimensions,category,dim,q);
       if(isR2R)addGroup(r2rOwners,item.ownerBusinessId||item.supplierId||item.ownerBusinessName||item.supplierName,{id:item.ownerBusinessId||item.supplierId||'',name:item.ownerBusinessName||item.supplierName||'Unknown Owner',qty:q,category,description,dimensions:dim});else {const position=b.status==='At Client'?'At Client':b.status==='In Transit'?'In Transit':b.status==='Maintenance'||b.status==='Inspection'?'Service / Inspection':b.locationType==='warehouse'?(b.status==='Available'?'Warehouse — Available':b.status==='Reserved'?'Warehouse — Reserved':`Warehouse — ${b.status}`):b.locationType==='supplier'?'At Supplier':`${b.status} / ${b.locationType||'Other'}`;addGroup(ownedPositions,position,{id:position,name:position,qty:q,category,description,dimensions:dim});}
     }
+    if(!live&&!isR2R)addGroup(ownedPositions,`Inactive / ${b.status}`,{id:b.status,name:`Inactive / ${b.status}`,qty:q,category,description,dimensions:dim});
     if(b.status==='Available')global.availableQty+=q;
     if(b.status==='At Client')global.atClientQty+=q;
     if(b.status==='At Supplier')global.atSupplierQty+=q;
