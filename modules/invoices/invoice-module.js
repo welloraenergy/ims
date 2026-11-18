@@ -90,9 +90,13 @@ async function loadClientDeliveries(){
  // Do not show an already indexed PO for a second time as a delivery row.
  // The canonical Client PO remains the single tracking document for its associated movements.
  const linkedKeys=new Set(groups.filter(g=>g.side==='client').map(g=>g.key));
- const candidatesWithPO=candidates.filter(m=>deliveryPO(m)&&m.toId);
- const canonical=await Promise.all(candidatesWithPO.map(m=>getDocs(query(collection(db,'document_refs'),where('commercialKey','==',key('client',m.toId,deliveryPO(m))),limit(1)))));
- canonical.forEach((snap,i)=>{if(!snap.empty)linkedKeys.add(key('client',candidatesWithPO[i].toId,deliveryPO(candidatesWithPO[i])));});
+ const keysToCheck=[...new Set(candidates.filter(m=>deliveryPO(m)&&m.toId).map(m=>key('client',m.toId,deliveryPO(m))))].filter(k=>!linkedKeys.has(k));
+ // Limit reads to one lookup per distinct client PO, not one per delivered item.
+ for(let i=0;i<keysToCheck.length;i+=15){
+  const chunk=keysToCheck.slice(i,i+15);
+  const matches=await Promise.all(chunk.map(k=>getDocs(query(collection(db,'document_refs'),where('commercialKey','==',k),limit(1)))));
+  matches.forEach((snap,n)=>{if(!snap.empty)linkedKeys.add(chunk[n]);});
+ }
  clientDeliveryRows=candidates.filter(m=>!deliveryPO(m)||!linkedKeys.has(key('client',m.toId||'',deliveryPO(m)))).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
 }
 function deliveryRowsHtml(){
