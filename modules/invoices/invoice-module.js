@@ -51,7 +51,13 @@ async function syncLegacyIndex(){if(!can('documents.edit'))return;const btn=$('d
 
 
 function deliveryPO(m){return Object.prototype.hasOwnProperty.call(m,'documentClientPO')?String(m.documentClientPO||'').trim():(String(m.referenceNumber||'').startsWith('PENDING-')?'':String(m.referenceType||'')==='client_po'?String(m.referenceNumber||'').trim():'');}
-function deliveryKey(m){return String(m.movementBatchId||m.movementId||m.id);}
+function deliveryKey(m){
+ const po=deliveryPO(m);
+ // A received PO belongs to one client document even if stock was dispatched in several movement batches.
+ if(po)return 'po|'+String(m.toId||norm(m.toName))+'|'+norm(po);
+ // PO-pending records still need a stable internal movement group rather than a synthetic PO number.
+ return 'pending|'+String(m.movementGroupId||m.movementBatchId||m.movementId||m.id);
+}
 async function loadClientDeliveries(){
  clientDeliveryRows=[];
  if(side!=='client'||page!==0)return;
@@ -64,24 +70,37 @@ async function loadClientDeliveries(){
  }else{
   snaps=[await getDocs(query(collection(db,'movements'),where('toType','==','client'),orderBy(documentId(),'desc'),limit(100)))];
  }
- const seen=new Set(),byBatch=new Map();
- for(const snap of snaps)for(const d of snap.docs){if(seen.has(d.id))continue;seen.add(d.id);const m={id:d.id,...d.data()};if(m.toType!=='client')continue;
-  const k=deliveryKey(m),group=byBatch.get(k);
-  if(group){group.itemIds.push(m.itemId);group.qty+=Number(m.qty||0);group.movements.push(m);}
-  else byBatch.set(k,{...m,itemIds:[m.itemId],qty:Number(m.qty||0),movements:[m]});
+ const seen=new Set(),byDocument=new Map();
+ for(const snap of snaps)for(const d of snap.docs){
+  if(seen.has(d.id))continue;seen.add(d.id);
+  const m={id:d.id,...d.data()};
+  if(m.toType!=='client')continue;
+  const k=deliveryKey(m),g=byDocument.get(k);
+  if(g){
+   g.itemIds.push(m.itemId);g.qty+=Number(m.qty||0);g.movements.push(m);
+   if(String(m.createdAt||'')>String(g.createdAt||''))g.createdAt=m.createdAt;
+  }else byDocument.set(k,{...m,documentKey:k,itemIds:[m.itemId],qty:Number(m.qty||0),movements:[m]});
  }
- clientDeliveryRows=[...byBatch.values()].filter(m=>{
+ const candidates=[...byDocument.values()].filter(m=>{
   if(docFilter.po&&m.movements.every(x=>deliveryPO(x)!==docFilter.po))return false;
-  if(docFilter.status&&docFilter.status!=='Pending PO'&&m.status!==docFilter.status)return false;
-  if(docFilter.status==='Pending PO'&&m.movements.some(x=>deliveryPO(x)))return false;
+  if(docFilter.status==='Pending PO')return m.movements.every(x=>!deliveryPO(x));
+  if(docFilter.status&&m.status!==docFilter.status)return false;
   return true;
- }).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+ });
+ // Do not show an already indexed PO for a second time as a delivery row.
+ // The canonical Client PO remains the single tracking document for its associated movements.
+ const linkedKeys=new Set(groups.filter(g=>g.side==='client').map(g=>g.key));
+ const candidatesWithPO=candidates.filter(m=>deliveryPO(m)&&m.toId);
+ const canonical=await Promise.all(candidatesWithPO.map(m=>getDocs(query(collection(db,'document_refs'),where('commercialKey','==',key('client',m.toId,deliveryPO(m))),limit(1)))));
+ canonical.forEach((snap,i)=>{if(!snap.empty)linkedKeys.add(key('client',candidatesWithPO[i].toId,deliveryPO(candidatesWithPO[i])));});
+ clientDeliveryRows=candidates.filter(m=>!deliveryPO(m)||!linkedKeys.has(key('client',m.toId||'',deliveryPO(m)))).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
 }
 function deliveryRowsHtml(){
  if(side!=='client'||page!==0)return'';
  return clientDeliveryRows.map(m=>{
   const po=deliveryPO(m),pending=!po;
-  return '<tr class="border-t border-slate-800 '+(pending?'bg-amber-950/20':'')+'"><td class="p-2 font-semibold">'+(pending?'<span class="text-amber-300">Pending PO</span>':esc(po))+'<div class="text-[10px] text-slate-500">Delivery · '+esc(m.itemAlias||m.itemCode||'')+'</div></td><td class="p-2">'+esc(m.toName||'')+'</td><td class="p-2">'+esc(m.status||'')+'</td><td class="p-2">'+esc((m.createdAt||'').slice(0,10))+'</td><td class="p-2">'+esc(m.documentPeriodTo||m.periodTo||'—')+'</td><td class="p-2 text-right">—</td><td class="p-2 text-right">'+m.qty+'</td><td class="p-2 text-right">—</td><td class="p-2 text-right">'+esc(m.documentCurrency||m.currency||'MYR')+' '+money(Number(m.documentPOAmount??m.clientPOAmount??0))+'</td><td class="p-2 text-right">—</td><td class="p-2 text-right">—</td><td class="p-2"><button class="openDelivery bg-slate-700 px-3 py-1.5 rounded-lg" data-batch="'+esc(deliveryKey(m))+'">Open</button></td></tr>';
+  const count=new Set(m.itemIds.filter(Boolean)).size;
+  return '<tr class="border-t border-slate-800 '+(pending?'bg-amber-950/20':'')+'"><td class="p-2 font-semibold">'+(pending?'<span class="text-amber-300">Pending PO</span>':esc(po))+'<div class="text-[10px] text-slate-500">Delivery · '+count+' item(s) · '+m.movements.length+' movement record(s)</div></td><td class="p-2">'+esc(m.toName||'')+'</td><td class="p-2">'+esc(m.status||'')+'</td><td class="p-2">'+esc((m.createdAt||'').slice(0,10))+'</td><td class="p-2">'+esc(m.documentPeriodTo||m.periodTo||'—')+'</td><td class="p-2 text-right">—</td><td class="p-2 text-right">'+m.qty+'</td><td class="p-2 text-right">—</td><td class="p-2 text-right">'+esc(m.documentCurrency||m.currency||'MYR')+' '+money(Number(m.documentPOAmount??m.clientPOAmount??0))+'</td><td class="p-2 text-right">—</td><td class="p-2 text-right">—</td><td class="p-2"><button class="openDelivery bg-slate-700 px-3 py-1.5 rounded-lg" data-batch="'+esc(deliveryKey(m))+'">Open</button></td></tr>';
  }).join('');
 }
 function movementDocInput(label,id,value='',type='text'){return '<label class="block text-xs text-slate-400">'+esc(label)+'<input id="'+id+'" type="'+type+'" class="'+cls+' mt-1" value="'+esc(value??'')+'"></label>';}
