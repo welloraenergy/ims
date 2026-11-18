@@ -84,7 +84,7 @@ function renderMovementDocuments(){
  $('mdApply').onclick=()=>{movementSearch=$('mdSearch').value.trim();movementOwnership=$('mdOwnership').value;showMovementDocuments(true);};
  $('mdClear').onclick=()=>{movementSearch='';movementOwnership='all';showMovementDocuments(true);};
  $('mdNext').onclick=()=>{if(movementNext){movementCursor=movementNext;movementPage++;showMovementDocuments(false);}};
- document.querySelectorAll('.mdOpen').forEach(b=>b.onclick=()=>{movementSelected=movementRows.find(m=>m.id===b.dataset.id);const area=$('mdDetail');area.innerHTML=movementDetailHtml(movementSelected);if($('mdSave'))$('mdSave').onclick=saveMovementDocument;area.scrollIntoView({block:'nearest',behavior:'smooth'});});
+ document.querySelectorAll('.mdOpen').forEach(b=>b.onclick=async()=>{movementSelected=movementRows.find(m=>m.id===b.dataset.id);const area=$('mdDetail');if(!movementSelected)return;try{if(movementSelected.itemId){const itemSnap=await getDoc(doc(db,'inventory',movementSelected.itemId));if(itemSnap.exists()){const item=itemSnap.data();movementSelected.ourPONumber=movementSelected.ourPONumber||item.ourPONumber||'';movementSelected.ourPOAmount=item.ourPOAmount??null;}}}catch(e){console.warn('Could not load linked stock registration for movement document',e);}if(!area.isConnected||!movementSelected)return;area.innerHTML=movementDetailHtml(movementSelected);if($('mdSave'))$('mdSave').onclick=saveMovementDocument;area.scrollIntoView({block:'nearest',behavior:'smooth'});});
 }
 async function saveMovementDocument(){
  if(!can('documents.edit')||!movementSelected)return;
