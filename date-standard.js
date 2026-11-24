@@ -2,8 +2,11 @@
   const pad=n=>String(n).padStart(2,'0');
 
   function formatIsoMatch(full,y,m,d,hh,mm,ss){
-    const date=`${d}/${m}/${y}`;
-    return hh?`${date} ${hh}:${mm}${ss?`:${ss}`:''}`:date;
+    const date=`${d}/${m}/${y.slice(-2)}`;
+    if(!hh)return date;
+    const value=new Date((full.replace(' ','T').endsWith('Z')?full.replace(' ','T'):full.replace(' ','T')+'Z'));
+    if(Number.isNaN(value.getTime()))return `${date} ${hh}:${mm}${ss?`:${ss}`:''}`;
+    return new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kuala_Lumpur',day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit',...(ss?{second:'2-digit'}:{}),hourCycle:'h23'}).format(value).replace(',','');
   }
 
   function formatUsDateTimeMatch(full,m,d,y,h,mi,s,amp){
@@ -11,7 +14,7 @@
     const ap=String(amp||'').toUpperCase();
     if(ap==='PM'&&hour<12)hour+=12;
     if(ap==='AM'&&hour===12)hour=0;
-    return `${pad(d)}/${pad(m)}/${y} ${pad(hour)}:${mi}${s?`:${s}`:''}`;
+    return `${pad(d)}/${pad(m)}/${y.slice(-2)} ${pad(hour)}:${mi}${s?`:${s}`:''}`;
   }
 
   function normalizeVisibleText(root){
@@ -26,7 +29,7 @@
       if(!p||['SCRIPT','STYLE','TEXTAREA','OPTION'].includes(p.tagName)||p.closest('input,textarea,select'))continue;
       const t=node.nodeValue;if(!t||!t.trim())continue;
       const n=t
-        .replace(/\b(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2})(?::(\d{2}))?(?:\.\d+)?Z?)?\b/g,formatIsoMatch)
+        .replace(/\b(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2})(?::(\d{2}))?(?:\.\d+)?Z?)?\b/g,formatIsoMatch)
         .replace(/\b(\d{1,2})\/(\d{1,2})\/(\d{4}),?\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)\b/gi,formatUsDateTimeMatch);
       if(n!==t)node.nodeValue=n;
     }
@@ -35,7 +38,7 @@
   function protectDateInput(el){
     if(!el||el.dataset.imsDateProtected==='1')return;
     el.dataset.imsDateProtected='1';
-    el.lang='en-GB';el.autocomplete='off';el.title='Select date from calendar — DD/MM/YYYY';el.style.cursor='pointer';
+    el.lang='en-GB';el.autocomplete='off';el.title='Select date from calendar — DD/MM/YY (calendar display depends on browser locale)';el.style.cursor='pointer';
     el.addEventListener('keydown',e=>{if(e.key==='Tab'||e.key==='Escape')return;e.preventDefault();if(typeof el.showPicker==='function'){try{el.showPicker();}catch{}}});
     el.addEventListener('paste',e=>e.preventDefault());
     el.addEventListener('drop',e=>e.preventDefault());
