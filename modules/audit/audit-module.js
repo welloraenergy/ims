@@ -7,7 +7,7 @@ let records=[],page=0,total=0,loading=false,cursors=[null];
 const byId=id=>document.getElementById(id),nowISO=()=>new Date().toISOString();
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const friendly=s=>String(s||'').toLowerCase().replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
-const displayDate=v=>v?new Date(v).toLocaleString():'';
+const displayDate=v=>{if(!v)return '';if(/^\d{4}-\d{2}-\d{2}$/.test(String(v)))return String(v).slice(8,10)+'/'+String(v).slice(5,7)+'/'+String(v).slice(2,4);const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v);return new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kuala_Lumpur',day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).format(d).replace(',','');};
 function baseQuery(){return query(collection(db,'audit_traces'),orderBy('performedAt','desc'));}
 function pageQuery(base,cursor,batchSize=PAGE_SIZE){const parts=[];if(cursor)parts.push(startAfter(cursor));parts.push(limit(batchSize));return query(base,...parts);}
 function exportRange(){const from=byId('imsAuditFrom')?.value||'',to=byId('imsAuditTo')?.value||'';if(from&&to&&to<from)throw new Error('To Date cannot be before From Date.');return{from,to};}
