@@ -5,7 +5,7 @@ import {can} from '../../ims-permissions.js';
 const $=id=>document.getElementById(id),now=()=>new Date().toISOString();
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const friendly=s=>String(s||'').toLowerCase().replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
-function fmt(v){if(!v)return'';const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v);return`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}
+function fmt(v){if(!v)return '';if(/^\d{4}-\d{2}-\d{2}$/.test(String(v)))return String(v).slice(8,10)+'/'+String(v).slice(5,7)+'/'+String(v).slice(2,4);const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v);return new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kuala_Lumpur',day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(d).replace(',','');}
 function money(currency,value){if(value===null||value===undefined||value==='')return'';const code=String(currency||'').trim().toUpperCase(),n=Number(value);if(!Number.isFinite(n))return`${code} ${String(value)}`.trim();return`${code} ${n.toLocaleString('en-MY',{minimumFractionDigits:2,maximumFractionDigits:2})}`.trim();}
 function balances(i){return(Array.isArray(i.stockBalances)?i.stockBalances:[]).filter(x=>Number(x.qty||0)>0);}
 function totalQty(i){return balances(i).reduce((n,b)=>n+Number(b.qty||0),0);}
