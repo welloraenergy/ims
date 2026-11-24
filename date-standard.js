@@ -35,15 +35,34 @@
     }
   }
 
+  const dateFields=new Map();
   function protectDateInput(el){
-    if(!el||el.dataset.imsDateProtected==='1')return;
-    el.dataset.imsDateProtected='1';
-    el.lang='en-GB';el.autocomplete='off';el.title='Select date from calendar — DD/MM/YY (calendar display depends on browser locale)';el.style.cursor='pointer';
-    el.addEventListener('keydown',e=>{if(e.key==='Tab'||e.key==='Escape')return;e.preventDefault();if(typeof el.showPicker==='function'){try{el.showPicker();}catch{}}});
-    el.addEventListener('paste',e=>e.preventDefault());
-    el.addEventListener('drop',e=>e.preventDefault());
+    if(!el||dateFields.has(el)||!el.parentNode)return;
+    el.lang='en-GB';el.autocomplete='off';el.title='Select date from calendar — DD/MM/YY';
+    const wrap=document.createElement('span'),display=document.createElement('span'),value=document.createElement('span'),icon=document.createElement('span');
+    wrap.style.cssText='display:grid;min-width:0;position:relative;';wrap.dataset.imsDateField='1';
+    display.className=el.className;display.style.cssText='grid-area:1/1;display:flex;align-items:center;justify-content:space-between;gap:8px;pointer-events:none;min-width:0;';display.setAttribute('aria-hidden','true');
+    icon.textContent='▦';icon.style.cssText='font-size:1em;opacity:.8;';display.append(value,icon);
+    el.parentNode.insertBefore(wrap,el);wrap.append(display,el);
+    el.style.gridArea='1/1';el.style.opacity='0';el.style.cursor='pointer';el.style.zIndex='1';
+    const sync=()=>{
+      const iso=el.value,formatted=/^\d{4}-\d{2}-\d{2}$/.test(iso)?iso.slice(8,10)+'/'+iso.slice(5,7)+'/'+iso.slice(2,4):'dd/mm/yy';
+      if(value.textContent!==formatted)value.textContent=formatted;
+      display.style.opacity=el.disabled?'.5':'1';
+      value.style.opacity=iso?'1':'.55';
+      if(el.className!==display.className)display.className=el.className;
+      wrap.style.display=el.hidden||getComputedStyle(el).display==='none'?'none':'grid';
+      display.style.outline=document.activeElement===el?'2px solid #22d3ee':'';
+      display.style.outlineOffset='2px';
+    };
+    dateFields.set(el,sync);sync();
+    ['input','change','focus','blur'].forEach(event=>el.addEventListener(event,sync));
+    el.addEventListener('keydown',e=>{if(e.key==='Tab'||e.key==='Escape')return;if(e.key==='Enter'||e.key===' '){e.preventDefault();if(typeof el.showPicker==='function'){try{el.showPicker();}catch{}}}});
     el.addEventListener('click',()=>{if(typeof el.showPicker==='function'){try{el.showPicker();}catch{}}});
   }
+  // Date inputs keep their native ISO value, calendar, validation and events.
+  // Refresh presentation when existing modules assign .value programmatically.
+  setInterval(()=>{for(const [el,sync] of dateFields){if(!el.isConnected){dateFields.delete(el);continue;}sync();}},250);
 
   function enhanceNode(root){
     if(!root)return;
