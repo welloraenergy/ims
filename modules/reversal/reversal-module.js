@@ -17,7 +17,7 @@ function finalStatus(type,failed){if(failed)return'Not Available';return type===
 function addBalance(list,{qty,locationType,locationId,locationName,status}){let dst=list.find(b=>same(b,locationType,locationId,locationName)&&b.status===status);if(dst)dst.qty+=qty;else list.push({qty,locationType,locationId:locationId||'',locationName:locationName||'Unknown',status});}
 function removeFrom(list,predicate,qty,label){let remaining=qty;for(const b of list.filter(predicate)){const take=Math.min(b.qty,remaining);b.qty-=take;remaining-=take;if(!remaining)break;}if(remaining>0)throw new Error(`${label} stock is no longer available in the expected state. Reverse the later transaction first.`);}
 function reversedStatus(x){return String(x?.status||'').toLowerCase()==='reversed';}
-function dateLabel(v){return String(v||'').replace('T',' ').slice(0,16)||'—';}
+function dateLabel(v){if(!v)return '—';if(/^\d{4}-\d{2}-\d{2}$/.test(String(v)))return String(v).slice(8,10)+'/'+String(v).slice(5,7)+'/'+String(v).slice(2,4);const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v);return new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kuala_Lumpur',day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(d).replace(',','');}
 function userEmail(){return auth.currentUser?.email||'';}
 function isSuperadmin(){return String(window.IMS_ROLE||'').toLowerCase()==='superadmin';}
 function commercialKey(side,businessId,po){return`${side}|${businessId||''}|${String(po||'').trim().toLowerCase()}`;}
