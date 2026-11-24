@@ -3,7 +3,7 @@ import {collection,endAt,getDocs,limit,orderBy,query,startAt} from 'https://www.
 
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const dateLabel=v=>String(v||'').replace('T',' ').slice(0,16)||'—';
+const dateLabel=v=>{if(!v)return '—';if(/^\d{4}-\d{2}-\d{2}$/.test(String(v)))return String(v).slice(8,10)+'/'+String(v).slice(5,7)+'/'+String(v).slice(2,4);const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v);return new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kuala_Lumpur',day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(d).replace(',','');};
 const variants=s=>[String(s||''),String(s||'').toUpperCase(),String(s||'').toLowerCase(),String(s||'').replace(/\b\w/g,c=>c.toUpperCase())].filter((v,i,a)=>v&&a.indexOf(v)===i);
 let timerMove,timerService,busy=false;
 
