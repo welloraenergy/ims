@@ -6,7 +6,7 @@ const PAGE_SIZE=50,EXPORT_BATCH=500;
 const inputCls='w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-sm';
 let page=0,cursors=[null],pageDocs=[],total=0,loading=false,sort={field:'date',dir:'desc'};
 const byId=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function fmt(v){if(!v)return'';const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v);return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}
+function fmt(v){if(!v)return '';if(/^\d{4}-\d{2}-\d{2}$/.test(String(v)))return String(v).slice(8,10)+'/'+String(v).slice(5,7)+'/'+String(v).slice(2,4);const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v);return new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kuala_Lumpur',day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(d).replace(',','');}
 function filterState(){const supplier=(byId('rmSupplier')?.value||'').trim(),client=(byId('rmClient')?.value||'').trim(),status=(byId('rmStatus')?.value||'').trim();if(supplier)return{field:'supplierName',value:supplier,label:'Supplier'};if(client)return{field:'clientName',value:client,label:'Client'};if(status)return{field:'status',value:status,label:'Status'};return{field:'',value:'',label:'All Records'};}
 function baseQuery(f){const c=collection(db,'operational_logs');return f.field?query(c,where(f.field,'==',f.value)):c;}
 function sortAvailable(f){return !f.field;}
