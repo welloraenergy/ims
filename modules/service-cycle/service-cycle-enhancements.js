@@ -1,6 +1,6 @@
 import {auth,db} from '../../firebase-config.js';
 import {addDoc,collection,doc,getDocs,limit,query,runTransaction,updateDoc,where} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
-import {applyInventorySummaryDelta,inventorySummaryDelta} from '../inventory/inventory-summary.js';
+import {applyInventorySummaryDelta,inventorySummaryDelta} from '../inventory/inventory-summary.js?v=20261125-129';
 
 {
 const $=id=>document.getElementById(id),norm=s=>String(s??'').trim().replace(/\s+/g,' ').toLowerCase(),now=()=>new Date().toISOString(),today=()=>now().slice(0,10);
