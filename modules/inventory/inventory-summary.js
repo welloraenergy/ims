@@ -1,7 +1,7 @@
 import {db} from '../../firebase-config.js';
 import {collection,doc,getDocs,runTransaction,setDoc} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
 
-export const SUMMARY_VERSION=7;
+export const SUMMARY_VERSION=8;
 export const SUMMARY_GLOBAL=doc(db,'inventory_summary','global');
 export const SUMMARY_DISTRIBUTION=doc(db,'inventory_summary','distribution');
 export const SUMMARY_CATEGORIES=doc(db,'inventory_summary','categories');
@@ -44,8 +44,8 @@ export function summarizeItem(item={}){
     if(live&&!isR2R&&b.locationType==='warehouse')addGroup(warehouses,b.locationId||b.locationName,{id:b.locationId||'',name:b.locationName||'Unknown',qty:q,availableQty:b.status==='Available'?q:0,category,description,dimensions:dim});
     if(live&&!isR2R&&b.status==='At Client')addGroup(clients,b.locationId||b.locationName,{id:b.locationId||'',name:b.locationName||'Unknown',qty:q,category,description,dimensions:dim});
     if(live&&b.status==='At Supplier'&&!isR2R)addGroup(suppliers,b.locationId||b.locationName,{id:b.locationId||'',name:b.locationName||item.supplierName||'Unknown Supplier',qty:q,category,description,dimensions:dim});
-    if(live&&!isR2R&&(b.status==='Maintenance'||b.status==='Inspection'))addGroup(services,b.locationId||b.locationName||b.status,{id:b.locationId||'',name:b.locationName||b.status,qty:q,category,description,dimensions:dim});
-    if(live&&!isR2R&&b.status==='In Transit')addGroup(transit,b.locationId||b.locationName||'In Transit',{id:b.locationId||'',name:b.locationName||'In Transit',qty:q,category,description,dimensions:dim});
+    if(live&&!isR2R&&(b.status==='Maintenance'||b.status==='Inspection')){const offsite=b.locationType==='service'&&b.serviceMode!=='On Site',locationId=offsite?(b.providerId||''):(b.locationType==='service'?'':b.locationId||''),locationName=offsite?(b.providerName||b.locationName||'Unknown Provider'):(b.locationName||'Unknown Location'),groupKey=offsite?'provider:'+String(locationId||locationName).trim().toUpperCase():'location:'+String(locationId||locationName).trim().toUpperCase();addGroup(services,groupKey,{id:locationId,name:locationName,qty:q,category,description,dimensions:dim});}
+    if(live&&!isR2R&&b.status==='In Transit'){const label=b.locationName||'In Transit',groupKey=b.locationType==='service'?'service:'+label.trim().toUpperCase():b.locationId||label;addGroup(transit,groupKey,{id:b.locationType==='service'?'':b.locationId||'',name:label,qty:q,category,description,dimensions:dim});}
   }
   return{global,warehouses,clients,suppliers,r2rOwners,ownedPositions,services,transit,categories,categoryDimensions};
 }
@@ -74,8 +74,8 @@ export async function applyInventorySummaryDelta(tx,delta,{updatedAt=new Date().
   const g={...gSnap.data(),summaryVersion:SUMMARY_VERSION};for(const k of GLOBAL_FIELDS)g[k]=Math.max(0,numeric(g[k])+numeric(delta.global[k]));g.updatedAt=updatedAt;g.updatedBy=updatedBy;
   const d={...dSnap.data(),summaryVersion:SUMMARY_VERSION};d.warehouses=applyGroups(d.warehouses,delta.warehouses,true);d.clients=applyGroups(d.clients,delta.clients);d.suppliers=applyGroups(d.suppliers,delta.suppliers);d.r2rOwners=applyGroups(d.r2rOwners,delta.r2rOwners);d.ownedPositions=applyGroups(d.ownedPositions,delta.ownedPositions);d.services=applyGroups(d.services,delta.services);d.transit=applyGroups(d.transit,delta.transit);d.updatedAt=updatedAt;d.updatedBy=updatedBy;
   const c={...cSnap.data(),summaryVersion:SUMMARY_VERSION};c.categories=applyValues(c.categories,delta.categories);c.categoryDimensions=applyDimensions(c.categoryDimensions,delta.categoryDimensions);c.updatedAt=updatedAt;c.updatedBy=updatedBy;
-  tx.set(SUMMARY_GLOBAL,g,{merge:true});tx.set(SUMMARY_DISTRIBUTION,d,{merge:true});tx.set(SUMMARY_CATEGORIES,c,{merge:true});return true;
+  tx.set(SUMMARY_GLOBAL,g);tx.set(SUMMARY_DISTRIBUTION,d);tx.set(SUMMARY_CATEGORIES,c);return true;
 }
 
 export async function updateInventorySummary(beforeItem,afterItem,meta={}){const delta=inventorySummaryDelta(beforeItem,afterItem);await runTransaction(db,tx=>applyInventorySummaryDelta(tx,delta,meta));}
-export async function rebuildInventorySummary(rebuiltBy=''){const snap=await getDocs(collection(db,'inventory')),items=snap.docs.map(d=>({id:d.id,...d.data()})),summary=summarizeInventory(items),at=new Date().toISOString(),meta={summaryVersion:SUMMARY_VERSION,updatedAt:at,updatedBy:rebuiltBy,rebuiltAt:at,rebuiltBy,sourceRecordCount:snap.size};await Promise.all([setDoc(SUMMARY_GLOBAL,{...meta,...summary.global}),setDoc(SUMMARY_DISTRIBUTION,{...meta,warehouses:summary.warehouses,clients:summary.clients,suppliers:summary.suppliers,r2rOwners:summary.r2rOwners,ownedPositions:summary.ownedPositions,services:summary.services,transit:summary.transit}),setDoc(SUMMARY_CATEGORIES,{...meta,categories:summary.categories,categoryDimensions:summary.categoryDimensions})]);return{recordCount:snap.size,...summary};}
+export async function rebuildInventorySummary(rebuiltBy=''){const snap=await getDocs(collection(db,'inventory')),items=snap.docs.map(d=>({id:d.id,...d.data()})),summary=summarizeInventory(items),at=new Date().toISOString(),meta={summaryVersion:SUMMARY_VERSION,updatedAt:at,updatedBy:rebuiltBy,rebuiltAt:at,rebuiltBy,sourceRecordCount:snap.size};await runTransaction(db,async tx=>{tx.set(SUMMARY_GLOBAL,{...meta,...summary.global});tx.set(SUMMARY_DISTRIBUTION,{...meta,warehouses:summary.warehouses,clients:summary.clients,suppliers:summary.suppliers,r2rOwners:summary.r2rOwners,ownedPositions:summary.ownedPositions,services:summary.services,transit:summary.transit});tx.set(SUMMARY_CATEGORIES,{...meta,categories:summary.categories,categoryDimensions:summary.categoryDimensions});});return{recordCount:snap.size,...summary};}
