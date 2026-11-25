@@ -1,7 +1,7 @@
 import {auth,db} from '../../firebase-config.js';
 import {addDoc,collection,doc,documentId,getDoc,getDocs,limit,orderBy,query,startAfter,Timestamp,writeBatch} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
 import {can} from '../../ims-permissions.js';
-import {rebuildInventorySummary} from '../inventory/inventory-summary.js';
+import {rebuildInventorySummary} from '../inventory/inventory-summary.js?v=20261125-129';
 
 const BACKUP_VERSION=8;
 const READ_BATCH=500,WRITE_BATCH=400,PORTABLE_WARNING_AT=50000;
