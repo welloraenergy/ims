@@ -1,6 +1,6 @@
 import { can, currentRole } from './ims-permissions.js?v=20260920-108';
 
-const IMS_BUILD='20261125-125';
+const IMS_BUILD='20261125-126';
 const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${IMS_BUILD}`;
 
 const MODULES=Object.freeze([
@@ -41,7 +41,6 @@ const MODULES=Object.freeze([
 {id:'commercial-context',src:'./ims-commercial-context.js',owner:'IMSCommercialContext'},
 {id:'client-due-warning',src:'./ims-client-due-warning.js',owner:'IMSDueWarning'},
 {id:'client-doc-enrichment',src:'./ims-client-doc-enrichment.js',owner:'IMSClientDocEnrichment'},
-{id:'service-transit-fix',src:'./modules/service-cycle/service-cycle-transit-fix.js',permission:'servicecycle.view',owner:'IMSServiceTransitFix'},
 {id:'service-enhancements',src:'./modules/service-cycle/service-cycle-enhancements.js',permission:'servicecycle.view',owner:'IMSServiceEnhancements'},
 {id:'item-master-editor',src:'./modules/items/item-master-editor.js',permission:'inventory.view',owner:'IMSItemMasterEditor'},
 {id:'sortable-tables',src:'./sortable-tables.js',mode:'classic'},
