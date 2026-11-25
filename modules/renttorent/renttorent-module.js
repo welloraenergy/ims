@@ -1,7 +1,7 @@
 import {auth,db} from '../../firebase-config.js';
 import {addDoc,collection,doc,getDocs,limit,query,runTransaction,setDoc,where} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
 import {can} from '../../ims-permissions.js';
-import {applyInventorySummaryDelta,combineInventorySummaryDeltas,inventorySummaryDelta} from '../inventory/inventory-summary.js';
+import {applyInventorySummaryDelta,combineInventorySummaryDeltas,inventorySummaryDelta} from '../inventory/inventory-summary.js?v=20261125-129';
 
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),cls='w-full min-w-0 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-sm',now=()=>new Date().toISOString(),norm=s=>String(s??'').trim().replace(/\s+/g,' ').toLowerCase();
 let settings=[],businesses=[],saving=false,batchSession=null;
