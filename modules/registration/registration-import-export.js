@@ -1,6 +1,6 @@
 import {auth,db} from '../../firebase-config.js';
 import {addDoc,collection,doc,documentId,getDoc,getDocs,limit,orderBy,query,runTransaction,setDoc,startAfter,updateDoc,where} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
-import {applyInventorySummaryDelta,inventorySummaryDelta} from '../inventory/inventory-summary.js';
+import {applyInventorySummaryDelta,inventorySummaryDelta} from '../inventory/inventory-summary.js?v=20261125-129';
 import * as XLSX from 'https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs';
 
 const $=id=>document.getElementById(id);
